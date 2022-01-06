@@ -1,0 +1,104 @@
+﻿@page "/appDetails/{appId}"
+@inject IApplicationService _appService
+@inject NavigationManager _navmanager
+
+
+<h3>@apps.appName</h3>
+
+<ul class="nav nav-tabs">
+    @*<li class="active"><a data-toggle="tab" href="#" @onclick="(() => GoTo(1))">Te dhenat e aplikimit</a></li>
+        <li><a data-toggle="tab" href="#" @onclick="(() => GoTo(2))">Historiku i aplikimit</a></li>
+
+        <li><a data-toggle="tab" href="#" @onclick="(() => GoTo(3))">Dokumentat e aplikimit</a></li>*@
+
+</ul>
+
+<div class="container">
+    <ul class="list-group">
+        <li class="list-group-item disabled">Aplikimi:  <span style="right:auto"> @apps.appName</span></li>
+        <li class="list-group-item">Data e aplikimit: <span style="right:auto">@apps.appDate </span></li>
+        <li class="list-group-item">Institucioni i aplikimit:  <span style="right:auto">@apps.institution?.name </span></li>
+        <li class="list-group-item">Statusi: <span style="right:auto">  @apps.status?.status </span></li>
+        <li class="list-group-item">Tipi: <span style="right:auto">@apps.type?.name </span></li>
+    </ul>
+</div>
+<div class="row text-center" style="margin-top:10px">
+    <div class="col">
+
+        <input type="button" @onclick="@(() => ShowAproveMovie(apps.appId))" class="btn btn-primary" value="Kalo ne hapin tjeter" />
+    </div>
+    <div class="col">
+        <input type="button" @onclick="@(() => ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string appId { get; set; }
+
+    string id { get; set; }
+    string nextStep = "display:none";
+
+    private ApplicationRequestDto apps = new();
+    string DisplayDetails = "display:block";
+    string DisplayHistory = "display:none";
+    string DisplayDocuments = "display:none";
+
+    ListOfApplicationConfigsDto ListOfApplicationCofigs = new();
+
+    private bool showModal = false;
+    ModalOptions options = new ModalOptions()
+    {
+        HideCloseButton = false
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        int.TryParse(appId, out int newId);
+        apps = await _appService.GetApplicationDetailsAsync(newId);
+
+
+    }
+
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+
+    void ShowEditMovie(int movieId)
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(EditApplication.apps), apps);
+
+        //       await GetAppsConfigs();
+        // parameters.Add(nameof(EditApplication.ListOfApplicationCofigs), ListOfApplicationCofigs);
+
+
+        Modal.Show<EditApplication>("EditApplication", parameters) ;
+    }
+
+    void ShowRefuzeApplication(int id)
+    {
+        var parameters = new ModalParameters();
+
+
+        parameters.Add(nameof(RefuseModal.apps), apps);
+
+        Modal.Show<RefuseModal>("Refuse", parameters, options);
+    }
+    void ShowAproveMovie(int id)
+    {
+        var parameters = new ModalParameters();
+
+
+        parameters.Add(nameof(AproveModal.apps), apps);
+
+        Modal.Show<AproveModal>("Aprove", parameters, options);
+    }
+    async Task GetAppsConfigs()
+    {
+        ListOfApplicationCofigs.ListOfInstitution = await _appService.GetInstitutionDtosAsync();
+        ListOfApplicationCofigs.ListOfStatus = await _appService.GetAppStatusesAsync();
+        var ls = await _appService.GetTypeDtosAsync();
+    }
+}

@@ -1,0 +1,244 @@
+﻿@page "/newApplication"
+@inject IApplicationService _appService
+@inject IUserRepository _userService
+@inject NavigationManager _navmanager
+
+<EditForm Model="requestDto">
+    <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Application Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputEmail3" @bind-value="requestDto.appName">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">Application Date</label>
+        <div class="col-sm-10">
+            @*<InputDate @bind-Value="requestDto.appDate"  />*@
+            <input type="date" class="form-control" @bind-value="requestDto.appDate">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">Institucioni</label>
+        <div class="col-sm-10">
+            <select class="custom-select mr-sm-2">
+                <option value="1">Institucioni A</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">statusi</label>
+        <div class="col-sm-10">
+            <select class="custom-select mr-sm-2">
+                <option value="1">Statusi A</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">Tipi</label>
+        <div class="col-sm-10">
+            <select class="custom-select mr-sm-2">
+                <option value="1">Tipi A</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">Tipi</label>
+        <div class="col-sm-10">
+            <select class="custom-select mr-sm-2" @bind="requestDto.to">
+                @foreach (var usr in users)
+                {
+                    <option value="@usr.id">@usr.name @usr.lastName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="custom-file">
+        <InputFile OnChange="@LoadFiles" class="custom-file-input" multiple />
+        @*<input type="file" onchange="@LoadFiles" class="custom-file-input" id="customFile">*@
+        <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>
+
+    @*<div class="form-group row">
+            <div class="col-sm-2">Checkbox</div>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck1">
+                    <label class="form-check-label" for="gridCheck1">
+                        Example checkbox
+                    </label>
+                </div>
+            </div>
+        </div>*@
+
+    @*<div class="form-group row">
+        <div class="col-sm-10">*@
+            <button  @onclick="CreateNew" class="btn btn-primary">Sign in</button>
+        @*</div>
+    </div>*@
+</EditForm>
+
+
+
+
+<!--<EditForm Model="requestDto">
+    <div class="simple-form">
+        <div class="container">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    Aplikimi:
+                    <input style="right:auto" @bind-value="requestDto.appName" type="text" />
+                </li>
+                <li class="list-group-item">
+                    Data e aplikimit:
+                    <InputDate @bind-Value="requestDto.appDate" style="right:auto" />
+                </li>
+                <li class="list-group-item">
+                    Institucioni i aplikimit:-->
+                    @*<select @bind="configsDto.ListOfInstitution">
+                            @if (configsDto?.ListOfInstitution != null)
+                            {
+                                @foreach (var ist in configsDto.ListOfInstitution)
+                                {
+                                    <option value="@ist.id">@ist.name</option>
+                                }
+                            }
+                        </select>*@
+                    <!--<select>
+                        <option value="1">Institucioni A</option>
+                    </select>
+                </li>
+                <li class="list-group-item">
+                    Statusi:
+                    <select>
+                        <option>Statusi A</option>
+                    </select>-->
+                    @*<select @bind="configsDto.ListOfStatus">
+                            @if (configsDto.ListOfStatus != null)
+                            {
+                                @foreach (var ist in configsDto.ListOfStatus)
+                                {
+                                    <option value="@ist.id">@ist.status</option>
+                                }
+                            }
+                        </select>*@
+
+                <!--</li>
+                <li class="list-group-item">
+                    Tipi:
+                    <select>
+                        <option>Tipi 1 A</option>
+                    </select>-->
+                    @*<select @bind="configsDto.ListOfTypes">
+                            @if (configsDto.ListOfTypes != null)
+                            {
+                                @foreach (var ist in configsDto.ListOfTypes)
+                                {
+                                    <option value="@ist.id">@ist.name</option>
+                                }
+                            }
+                        </select>*@
+                <!--</li>
+                <li class="list-group-item">
+                    <select @bind="requestDto.to">
+                        @foreach (var usr in users)
+                        {
+                            <option value="@usr.id">@usr.name @usr.lastName</option>
+                        }
+                    </select>
+                </li>
+                <li class="list-group-item">
+                    <InputFile OnChange="@LoadFiles" multiple />
+                </li>
+            </ul>
+        </div>
+        <button @onclick="CreateNew" class="btn btn-primary">Submit</button>-->
+        @*<button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>*@
+    <!--</div>
+
+</EditForm>-->
+
+
+@code {
+    private ApplicationRequestDto requestDto = new ApplicationRequestDto();
+    private ListOfApplicationConfigsDto configsDto { get; set; }
+    //[CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+    private List<UsersDto> users = new();
+    private List<IBrowserFile> loadedFiles = new();
+    private List<DocumentDto> documentDtos = new();
+
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await _userService.GetUsersAsync();
+
+        try
+        {
+            var institution = _appService.GetInstitutionDtosAsync().Result.ToList();
+            configsDto.ListOfInstitution = institution;
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+
+        ////var status = await _appService.GetAppStatusesAsync();
+        ////var types = await _appService.GetTypeDtosAsync();
+        ////configsDto.ListOfInstitution = institution;
+        ////configsDto.ListOfStatus = status;
+        ////configsDto.ListOfTypes = types;
+    }
+    private async void LoadFiles(InputFileChangeEventArgs e)
+    {
+
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+
+                var buffers = new byte[file.Size];
+                await file.OpenReadStream().ReadAsync(buffers);
+                string image = Convert.ToBase64String(buffers);
+
+
+                documentDtos.Add(new()
+                {
+                    name = file.Name,
+                    extention = file.ContentType,
+                    base64 = image,
+                    bytes = buffers
+                });
+                loadedFiles.Add(file);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+    }
+
+    async void CreateNew()
+    {
+        requestDto.document = documentDtos.FirstOrDefault();
+        requestDto.status = new AppStatus() { id = 1 };
+        requestDto.institution = new InstitutionDto() { id = 1 };
+        requestDto.type = new TypeDto() { id = 1 };
+        var post = await _appService.PostApplicationAsync(requestDto);
+
+        if (post)
+        {
+            _navmanager.NavigateTo("/dashboard");
+        }
+        else
+        {
+            ModalInstance.CancelAsync();
+        }
+    }
+
+}

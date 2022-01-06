@@ -1,0 +1,84 @@
+﻿@page "/dashboard"
+@inject NavigationManager Navigation
+@inject IAuthenticationServices _auth
+@inject IApplicationService _appService
+@inject NavigationManager _navmanager
+
+@using Microsoft.AspNetCore.Components.Authorization
+<AuthorizeView>
+    <Authorized>
+        <div class="row">
+            <div class="col-10">
+                <h3>Dashboard</h3>
+            </div>
+            @if (!context.User.IsInRole("admin"))
+            {
+                <div class="col-2">
+                    <input class="btn btn-info" type="button" value="New" @onclick="(()=>GoToNewApplicationComponent())" />
+                </div>
+            }
+
+        </div>
+
+
+
+
+        @*<AuthorizeView>
+            <Authorized>*@
+        <center>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Aplikimi</th>
+                        <th>Data e aplikimit</th>
+                        <th>Tipi i aplikimit</th>
+                        <th>Institucioni</th>
+                        <th>Statusi</th>
+
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var a in apps)
+                    {
+                        <tr style="cursor:pointer" @onclick="(()=>GoToDetails(a.appId))">
+                            <td>@a.appName</td>
+                            <td>@a.appDate</td>
+                            <td>@a.type.name</td>
+                            <td>@a.institution.name</td>
+                            <td>@a.status.status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </center>
+    </Authorized>
+</AuthorizeView>
+@*</Authorized>
+        <NotAuthorized>
+            <h1>Authentication Failure!</h1>
+            <p>You're not signed in.</p>
+        </NotAuthorized>
+    </AuthorizeView>*@
+
+
+
+@code {
+
+    private List<ApplicationRequestDto> apps = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        apps = await _appService.GetApplicationAsync();
+    }
+
+    void GoToDetails(int id)
+    {
+        _navmanager.NavigateTo($"/appDetails/{id}");
+    }
+    void GoToNewApplicationComponent()
+    {
+        _navmanager.NavigateTo("/newApplication");
+    }
+}

@@ -1,0 +1,13 @@
+﻿
+<div class="simple-form">
+
+    <div class="form-group">
+        <label>@message </label>
+
+    </div>
+
+</div>
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public string message { get; set; }
+}

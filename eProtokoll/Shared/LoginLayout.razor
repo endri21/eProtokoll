@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+@inject IAuthenticationServices _authservice
+@inject NavigationManager Navigation
+@inject IAuthenticationServices _providerService
+<div class="col-12 ">
+    @Body
+</div>
+@code{
+    UsersDto user = new();
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    user = await _providerService.GetLoginUserAsync();
+    //    if (!string.IsNullOrEmpty(user.token))
+    //    {
+    //        Navigation.NavigateTo("/dashboard", true);
+    //    }
+
+    //}
+}

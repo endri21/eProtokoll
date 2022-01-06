@@ -1,0 +1,90 @@
+﻿@page "/register"
+@inject IUserRepository _userService
+@using System
+@using System.IO
+
+
+<h3>Register</h3>
+<center>
+    <div class="col-8 card">
+        <div class="col-12 row">
+            <p>&nbsp;</p>
+        </div>
+
+        <div class="col-12 row">
+
+            @if (showErrorMessage)
+            {
+                <div class="col-12 alert alert-danger">@errorMessage</div>
+            }
+            <div class="col-12">
+                <EditForm Model="model" OnValidSubmit="AddNewUser">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div>
+                        <br />
+                    </div>
+                    <div class="col-9 row">
+                        <label class="form-control">Emri</label>
+                        <input type="text" @bind-value="model.name" class="form-control col-12 " />
+                        <ValidationMessage For="@(()=>model.name)" />
+                    </div>
+                    <div class="col-9 row">
+                        <label class="form-control">Mbiemri</label>
+                        <input type="text" @bind-value="model.lastName" class="form-control col-12 " />
+                        <ValidationMessage For="@(()=>model.lastName)" />
+                    </div>
+                    <div class="col-9 row">
+                        <InputFile OnChange="@LoadFiles" />
+                        @*<input type="file" @bind-value="model.photo" class="form-control col-12 " />*@
+
+                    </div>
+                    <div class="col-9 row">
+                        <input type="email" @bind-value="model.username" class="form-control col-12 " />
+                        <ValidationMessage For="@(()=>model.username)" />
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+                    <div class="col-9 row">
+                        <input type="password" @bind-value="model.password" class="form-control col-12 " />
+                        <ValidationMessage For="@(()=>model.password)" />
+                    </div>
+                </EditForm>
+            </div>
+            <br />
+            <div class="col-9">
+                <button @onclick="AddNewUser" class="btn btn-success ">Log in</button>
+            </div>
+        </div>
+
+    </div>
+</center>
+
+
+
+@code {
+    private RegisterRequest model = new();
+    private bool showErrorMessage = false;
+    private string errorMessage = "";
+
+    private async Task AddNewUser()
+    {
+        //var PhotoExtension = loadedFiles.First().ContentType;
+        //var photoName = loadedFiles[0].Name;
+
+        var result = await _userService.RegisterAsync(model);
+    }
+
+
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 3;
+    private bool isLoading;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+      
+
+    }
+}

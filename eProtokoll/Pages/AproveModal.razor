@@ -1,0 +1,25 @@
+﻿@inject IApplicationService appsService
+
+
+<div class="simple-form">
+
+    <div class="form-group">
+        <label for="movie-name">Aplikimi: @apps.appName </label>
+        <textarea type="text" class="form-control" id="movie-name" />
+    </div>
+    <button @onclick="SaveMovie" class="btn btn-primary">Submit</button>
+    <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
+</div>
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public ApplicationRequestDto apps { get; set; }
+
+    void SaveMovie()
+    {
+
+        //appsService.Save(apps);
+        // ModalInstance.CloseAsync(ModalResult.Ok<ApplicationRequestDto>(apps));
+    }
+}

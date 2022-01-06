@@ -1,0 +1,74 @@
+﻿@page "/users"
+@inject IUserRepository _userService
+@inject NavigationManager _navmanager
+
+<style>
+    .dot {
+        height: 20px;
+        width: 20px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .red-dot {
+        background-color: red;
+    }
+
+    .green-dot {
+        background-color: green;
+    }
+</style>
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="admin">
+    <h3>Users</h3>
+
+    <center>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Last name</th>
+                    <th>Username</th>
+                    <th>Active</th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var a in users)
+                {
+                    <tr style="cursor:pointer" @onclick="(()=>GoToUser(a.id))">
+                        <td>@a.name</td>
+                        <td>@a.lastName</td>
+                        <td>@a.username</td>
+                        <td>
+                            @if (a.isActive)
+                            {
+                                <span class="dot green-dot"></span>
+                            }
+                            else
+                            {
+                                <span class="dot red-dot"></span>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </center>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+@code {
+    //list of users
+
+    private List<UsersDto> users = new();
+    protected override async Task OnInitializedAsync()
+    {
+        users = await _userService.GetUsersAsync();
+    }
+    void GoToUser(int id)
+    {
+        _navmanager.NavigateTo($"/user/{id}");
+    }
+
+}

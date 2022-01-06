@@ -1,0 +1,79 @@
+﻿@page "/user/{userId}"
+@inject IUserRepository _userService
+
+
+
+
+<div class="container">
+    <ul class="list-group">
+        <li class="list-group-item disabled">
+            Name:
+            <span style="right:auto"> @users.name</span>
+        </li>
+        <li class="list-group-item">
+            User Name:
+            <span style="right:auto">@users.username </span>
+        </li>
+        <li class="list-group-item">
+            Last Name:
+            <span style="right:auto">@users.lastName </span>
+        </li>
+
+        <li class="list-group-item">
+            Is Active:
+            @if (users.isActive)
+            {
+                <input type="checkbox" checked="checked" />
+            }
+            else
+            {
+                <input type="checkbox" @onchange="(()=>ChangeUserActivation(users.id))" />
+            }
+
+
+        </li>
+    </ul>
+</div>
+<div class="row text-center" style="margin-top:10px">
+    @*<div class="col">
+
+            <input type="button" @onclick="@(() => ShowAproveMovie(apps.appId))" class="btn btn-primary" value="Kalo ne hapin tjeter" />
+        </div>
+        <div class="col">
+            <input type="button" @onclick="@(() => ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+        </div>*@
+</div>
+
+@code {
+
+    [Parameter]
+    public string userId { get; set; }
+    public UsersDto users = new UsersDto();
+    string _checked { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        int.TryParse(userId, out int newId);
+        users = await _userService.GetUserAsyncById(newId);
+
+        _checked = users.isActive ? "checked" : "";
+    }
+    async void ChangeUserActivation(int userId)
+    {
+        var parameters = new ModalParameters();
+        var active = await _userService.ActivateUserAsync(userId);
+        if (active)
+        {
+            parameters.Add(nameof(Components.SuccessComponent.message), "Useri u aktivizua me sukses");
+            parameters.Add(nameof(Components.SuccessComponent.url), "/users");
+
+            Modal.Show<Components.SuccessComponent>("Success", parameters);
+        }
+        else
+        {
+            parameters.Add(nameof(Components.ErrorComponent.message), "Ka ndodhur nje gabim me aktivizimin e perdoruesit");
+            Modal.Show<Components.ErrorComponent>("Error", parameters);
+        }
+    }
+}

@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+
+@inject IAuthenticationServices _authservice
+@inject NavigationManager Navigation
+@inject IAuthenticationServices _providerService
+
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+
+@*<AuthorizeView>
+    <Authorized>*@
+        @*<h1>Hello, @context.User.Identity.Name!</h1>*@
+
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+
+            <div class="main">
+
+                <div class="top-row px-4">
+
+                    <label class="form-control">Miresevjen @*@context.User.Identity.Name!*@ Name</label>
+                    <input type="button" @onclick="Logout" class="btn btn-link " value="logout" />
+                </div>
+
+                <div class="content px-4">
+                    @Body
+                </div>
+            </div>
+        </div>
+    <!--</Authorized>
+    <NotAuthorized>
+        @this.Logout();-->
+        @*<h1>Authentication Failure!</h1>
+        <p>You're not signed in.</p>*@
+    <!--</NotAuthorized>
+</AuthorizeView>-->
+
+@code {
+    private void SecureMethod()
+    {
+
+    }
+}
+
+
+@code{
+
+
+
+    public async Task Logout()
+    {
+        _authservice.Logout();
+        Navigation.NavigateTo("/", true);
+    }
+}

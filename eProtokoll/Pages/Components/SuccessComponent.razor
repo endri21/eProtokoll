@@ -1,0 +1,19 @@
+﻿@inject NavigationManager _navmanager
+<div class="simple-form">
+
+    <div class="form-group">
+        <label>@message </label>
+    </div>
+    <button @onclick="GoTo" class="btn btn-primary">Ok</button>
+
+</div>
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public string message { get; set; }
+    [Parameter] public string url { get; set; }
+
+    void GoTo()
+    {
+        _navmanager.NavigateTo(url);
+    }
+}

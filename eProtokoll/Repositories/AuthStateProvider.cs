@@ -30,9 +30,14 @@ namespace eProtokoll.Repositories
                 return _authentication;
             }
             _clientRepository.AuthorizationAsync(token);
-            return new AuthenticationState(
-                new ClaimsPrincipal(
-                    new ClaimsIdentity()));
+
+            var authUser = new ClaimsPrincipal(
+              new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwtAuthType")
+              );
+
+            var user = new ClaimsPrincipal(authUser);
+
+            return new AuthenticationState(user);
         }
 
         public void NotifyUserAuthentication(UsersDto user)

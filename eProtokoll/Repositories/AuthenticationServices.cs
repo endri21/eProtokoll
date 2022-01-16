@@ -41,6 +41,7 @@ namespace eProtokoll.Repositories
             string content = string.Empty;
             try
             {
+
                 content = await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -83,8 +84,9 @@ namespace eProtokoll.Repositories
         public async void Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");
+            await _localStorage.RemoveItemAsync("local_user");
             ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
-            // _httpClient.DefaultRequestHeaders.Authorization = null;
+          
             _clientRepository.EmptyDefaultRequestHeadersAsync();
         }
         public async Task<string> GetAuthenticationToken()

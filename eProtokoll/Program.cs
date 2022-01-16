@@ -29,6 +29,7 @@ namespace eProtokoll
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IApplicationConfigurationService, ApplicationConfigurationService>();
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);

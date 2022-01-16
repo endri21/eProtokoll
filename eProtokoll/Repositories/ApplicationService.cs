@@ -12,13 +12,15 @@ namespace eProtokoll.Repositories
     public class ApplicationService : IApplicationService
     {
         private readonly IHttpClientRepository _httpClient;
-        //private readonly AuthenticationServices _authenticationServices;
         private readonly string POST_APPLICATION_URL = "/application/postApp";
         private readonly string GET_APPLICATION_URL = "/application/GetMyApplications";
         private readonly string GET_APPLICATION_DETAILS_URL = "/application/GetApplicationDetails";
         private readonly string GET_INSTITUTION_URL = "/applicationConfig/GetInstitution";
         private readonly string GET_STATUS_URL = "/applicationConfig/GetStatuses";
         private readonly string GET_TYPES_URL = "/applicationConfig/GetTypes";
+        private readonly string REFUSE_APP_URL = "/application/RefuseApplication";
+        private readonly string NEXT_STEP_URL = "/application/NextStep";
+
         private readonly IAuthenticationServices _authService;
         public ApplicationService(IHttpClientRepository httpClient, IAuthenticationServices authService)
         {
@@ -34,56 +36,36 @@ namespace eProtokoll.Repositories
         }
         public async Task<List<ApplicationRequestDto>> GetApplicationAsync()
         {
-            string token = (await _authService.GetLocalUser()).token;
+           string token = (await _authService.GetLocalUser())?.token;
             var response = await _httpClient.GetAsync($"{GET_APPLICATION_URL}?token={token}");
             try
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<List<ApplicationRequestDto>>(
-                              content
-                              //,
-                              //new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                              );
-                return result;
+                return JsonConvert.DeserializeObject<List<ApplicationRequestDto>>(content) ?? new List<ApplicationRequestDto>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
                 return new List<ApplicationRequestDto>
                 {
-
-
                 };
             }
 
         }
 
-        public async Task<ApplicationRequestDto> GetApplicationDetailsAsync(int id)
+        public async Task<UserApplicationsRequestDto> GetApplicationDetailsAsync(int id)
         {
             var response = await _httpClient.GetAsync($"{GET_APPLICATION_DETAILS_URL}?id={id}");
             try
             {
-
                 if (response.IsSuccessStatusCode)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true,
-                        IgnoreReadOnlyProperties = true,
-                        WriteIndented = true
-                    };
-                    var result = JsonConvert.DeserializeObject<ApplicationRequestDto>(
-                                  content//,
-                                         //new JsonSerializerOptions { PropertyNameCaseInsensitive = true}
-                                         // options
-                                  );
-                    //result.success = true;
+                    var result = JsonConvert.DeserializeObject<UserApplicationsRequestDto>(content);
                     return result;
                 }
                 else
                 {
-                    return new ApplicationRequestDto
+                    return new UserApplicationsRequestDto
                     {
                         // success = false,
                         //errorMessage = "Nuk u mundesua lidhja me serverin qendror"
@@ -94,7 +76,7 @@ namespace eProtokoll.Repositories
             catch (Exception ex)
             {
 
-                return new ApplicationRequestDto
+                return new UserApplicationsRequestDto
                 {
                     /// success = false,
                     //errorMessage = "Ka ndodhur nje gabim"
@@ -109,7 +91,7 @@ namespace eProtokoll.Repositories
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                var result =  JsonConvert.DeserializeObject<List<InstitutionDto>>(content);
+                var result = JsonConvert.DeserializeObject<List<InstitutionDto>>(content);
                 return result.ToList();
             }
             catch (Exception)
@@ -124,13 +106,8 @@ namespace eProtokoll.Repositories
             var response = await _httpClient.GetAsync(GET_STATUS_URL);
             try
             {
-
                 var content = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<List<AppStatus>>(content);
-                //var result = JsonSerializer.Deserialize<List<AppStatus>>(
-                //              content,
-                //              new JsonSerializerOptions { PropertyNameCaseInsensitive = true } );
-                return result;
+                return JsonConvert.DeserializeObject<List<AppStatus>>(content);
             }
             catch (Exception)
             {
@@ -144,14 +121,7 @@ namespace eProtokoll.Repositories
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-
-                var result = JsonConvert.DeserializeObject<List<TypeDto>>(content);
-                //var result = JsonSerializer.Deserialize<List<TypeDto>>(
-                //             content,
-                //              new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                //              );
-
-                return result;
+                return JsonConvert.DeserializeObject<List<TypeDto>>(content);
             }
             catch (Exception)
             {
@@ -160,6 +130,39 @@ namespace eProtokoll.Repositories
             }
         }
 
+        public async Task<bool> RefuseApplicationAsync(UserApplicationsRequestDto requestDto)
+        {
+            var response = await _httpClient.PostAsync(requestDto, REFUSE_APP_URL);
+            try
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<bool>(content);
+            }
+            catch (Exception)
+            {
 
+                return false;
+            }
+        }
+
+        public async Task<Response> PassInNextStepAsync(UserApplicationsRequestDto dto)
+        {
+
+            var response = await _httpClient.PostAsync(dto, NEXT_STEP_URL);
+            try
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<Response>(content);
+            }
+            catch (Exception)
+            {
+
+                return new Response()
+                {
+                    success = false,
+                    errorMessage = "Ka ndodhur nje gabim"
+                };
+            }
+        }
     }
 }

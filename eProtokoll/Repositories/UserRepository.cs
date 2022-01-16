@@ -20,9 +20,11 @@ namespace eProtokoll.Repositories
         }
 
         private readonly string REGISTER_URL = "auth/register";
-        private readonly string GET_ALL_USERS = "usersmanage/getusers";
+        private readonly string GET_USERS_BY_ROLE = "usersmanage/GetUsersByRole";
         private readonly string GET_USER = "usersmanage/GetUserById";
         private readonly string ACTIVATE_USER = "usersmanage/ActivateUser";
+        private readonly string GET_ROLES = "UsersManage/GetRoles";
+        private readonly string GET_ALL_USERS = "UsersManage/getallusers";
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest register)
         {
             try
@@ -46,16 +48,22 @@ namespace eProtokoll.Repositories
 
         }
 
+        public async Task<List<UsersDto>> GetUsersByRoleAsync(string role)
+        {
+            var response = await _clientRepository.GetAsync($"{GET_USERS_BY_ROLE}?role={role}");
+            var content = response.Content.ReadAsStringAsync().Result;
+
+
+            var result = JsonConvert.DeserializeObject<List<UsersDto>>(content);
+            return result;
+        }
         public async Task<List<UsersDto>> GetUsersAsync()
         {
             var response = await _clientRepository.GetAsync(GET_ALL_USERS);
             var content = response.Content.ReadAsStringAsync().Result;
 
 
-            var result = JsonConvert.DeserializeObject<List<UsersDto>>(
-                          content//,
-                                 // new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                          );
+            var result = JsonConvert.DeserializeObject<List<UsersDto>>(content);
             return result;
         }
 
@@ -140,6 +148,22 @@ namespace eProtokoll.Repositories
 
                 return false;
             }
+        }
+
+        public async Task<List<RoleDto>> GetRolesAsync()
+        {
+            var response = await _clientRepository.GetAsync(GET_ROLES);
+            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<List<RoleDto>>(content);
+                return result;
+            }
+            else
+            {
+                return new List<RoleDto>();
+            }
+           
         }
     }
 }

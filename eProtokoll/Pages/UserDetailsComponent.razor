@@ -32,16 +32,21 @@
 
 
         </li>
+
+        <li>
+            Role :
+            <select>
+                @foreach (var i in roleDtos)
+                {
+                    <option value="@i.Id">@i.Name</option>
+                }
+            </select>
+        </li>
+
     </ul>
 </div>
 <div class="row text-center" style="margin-top:10px">
-    @*<div class="col">
 
-            <input type="button" @onclick="@(() => ShowAproveMovie(apps.appId))" class="btn btn-primary" value="Kalo ne hapin tjeter" />
-        </div>
-        <div class="col">
-            <input type="button" @onclick="@(() => ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
-        </div>*@
 </div>
 
 @code {
@@ -49,15 +54,17 @@
     [Parameter]
     public string userId { get; set; }
     public UsersDto users = new UsersDto();
-    string _checked { get; set; }
+    List<RoleDto> roleDtos = new List<RoleDto>();
+
     [CascadingParameter] public IModalService Modal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         int.TryParse(userId, out int newId);
         users = await _userService.GetUserAsyncById(newId);
+        roleDtos = await _userService.GetRolesAsync();
 
-        _checked = users.isActive ? "checked" : "";
+
     }
     async void ChangeUserActivation(int userId)
     {

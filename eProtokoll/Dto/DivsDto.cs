@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 
 namespace eProtokoll.Dto
 {
-    public static class Urls
+    public class DivsDto
     {
-        public const string BASE_URL = "https://localhost:44393/";//swagger
-       
-        
-
     }
 }

@@ -10,8 +10,10 @@ namespace eProtokoll.Interfaces
     {
         Task<RegisterResponse> RegisterAsync(RegisterRequest register);
         Task<List<UsersDto>> GetUsersAsync();
+        Task<List<UsersDto>> GetUsersByRoleAsync(string role);
         Task<UsersDto> GetUserAsyncById(int id);
         Task<bool> ActivateUsersAsync(List<int> id);
         Task<bool> ActivateUserAsync(int id);
+        Task<List<RoleDto>> GetRolesAsync();
     }
 }

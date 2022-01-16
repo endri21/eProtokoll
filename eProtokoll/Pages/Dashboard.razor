@@ -11,7 +11,8 @@
             <div class="col-10">
                 <h3>Dashboard</h3>
             </div>
-            @if (!context.User.IsInRole("admin"))
+            
+            @if (context.User.IsInRole("Punojes"))
             {
                 <div class="col-2">
                     <input class="btn btn-info" type="button" value="New" @onclick="(()=>GoToNewApplicationComponent())" />
@@ -19,8 +20,6 @@
             }
 
         </div>
-
-
 
 
         @*<AuthorizeView>
@@ -43,11 +42,11 @@
                     @foreach (var a in apps)
                     {
                         <tr style="cursor:pointer" @onclick="(()=>GoToDetails(a.appId))">
-                            <td>@a.appName</td>
-                            <td>@a.appDate</td>
-                            <td>@a.type.name</td>
-                            <td>@a.institution.name</td>
-                            <td>@a.status.status</td>
+                            <td>@a?.appName</td>
+                            <td>@a?.appDate</td>
+                            <td>@a?.type?.name</td>
+                            <td>@a?.institution?.name</td>
+                            <td>@a?.status</td>
                         </tr>
                     }
                 </tbody>
@@ -68,8 +67,10 @@
 
     private List<ApplicationRequestDto> apps = new();
 
+
     protected override async Task OnInitializedAsync()
-    {
+        {
+
         apps = await _appService.GetApplicationAsync();
     }
 

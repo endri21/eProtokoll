@@ -8,37 +8,42 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 
-@*<AuthorizeView>
-    <Authorized>*@
-        @*<h1>Hello, @context.User.Identity.Name!</h1>*@
+<AuthorizeView>
+    <Authorized>
+@*<h1>Hello, @context.User.Identity.Name!</h1>*@
 
-        <div class="page">
-            <div class="sidebar">
-                <NavMenu />
-            </div>
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-            <div class="main">
+    <div class="main">
 
-                <div class="top-row px-4">
+        <div class="top-row px-4">
 
-                    <label class="form-control">Miresevjen @*@context.User.Identity.Name!*@ Name</label>
-                    <input type="button" @onclick="Logout" class="btn btn-link " value="logout" />
-                </div>
-
-                <div class="content px-4">
-                    @Body
-                </div>
-            </div>
+            <label class="form-control">Miresevjen @context.User.Identity.Name!</label>
+            <input type="button" @onclick="Logout" class="btn btn-link " value="logout" />
         </div>
-    <!--</Authorized>
-    <NotAuthorized>
-        @this.Logout();-->
-        @*<h1>Authentication Failure!</h1>
-        <p>You're not signed in.</p>*@
-    <!--</NotAuthorized>
-</AuthorizeView>-->
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+</Authorized>
+@*<NotAuthorized>*@
+    
+@*<h1>Authentication Failure!</h1>
+    <p>You're not signed in.</p>*@
+@*</NotAuthorized>*@
+</AuthorizeView>
 
 @code {
+    private UsersDto user = new();
+    protected override async Task OnInitializedAsync()
+    {
+        ///user = await _providerService.GetLocalUser();
+    }
     private void SecureMethod()
     {
 
@@ -52,7 +57,7 @@
 
     public async Task Logout()
     {
-        _authservice.Logout();
+        Task.Run(() => _authservice.Logout());
         Navigation.NavigateTo("/", true);
     }
 }

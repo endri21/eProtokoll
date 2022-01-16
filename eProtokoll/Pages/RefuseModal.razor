@@ -1,26 +1,42 @@
-﻿@inject IApplicationService appsService
+﻿@inject IApplicationService _appsService
 
+<EditForm Model="requestDto">
+    <div class="simple-form">
 
-<div class="simple-form">
+        <div class="form-group">
+            <label>Comment </label>
+            <InputTextArea @bind-Value="requestDto.comment" class="form-control"></InputTextArea>
 
-    <div class="form-group">
-        @*<label for="movie-name">Aplikimi: @apps.appName </label>*@
-        <textarea type="text" class="form-control" id="movie-name" />
+        </div>
+        <button @onclick="Refuze" class="btn btn-primary">Submit</button>
+
     </div>
-    <button @onclick="SaveMovie" class="btn btn-primary">Submit</button>
-    <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
-</div>
-
+</EditForm>
 
 @code {
 
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public ApplicationRequestDto apps { get; set; }
 
-    void SaveMovie()
+
+    //[Parameter] public ApplicationRequestDto apps { get; set; }
+    [Parameter] public UserApplicationsRequestDto requestDto { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+    async void Refuze()
     {
 
-        //appsService.Save(apps);
-       // ModalInstance.CloseAsync(ModalResult.Ok<ApplicationRequestDto>(apps));
+        var parameters = new ModalParameters();
+        var result = await _appsService.RefuseApplicationAsync(requestDto);
+        if (result)
+        {
+            parameters.Add(nameof(Components.SuccessComponent.message), "Success");
+            parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
+
+            Modal.Show<Components.SuccessComponent>("Success", parameters);
+        }
+        else
+        {
+            parameters.Add(nameof(Components.ErrorComponent.message), "Ka ndodhur nje gabim");
+            Modal.Show<Components.ErrorComponent>("Error", parameters);
+        }
     }
 }

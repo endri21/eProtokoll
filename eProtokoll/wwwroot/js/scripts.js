@@ -1,13 +1,4 @@
-﻿async function downloadFileFromStream(fileName, contentStreamReference) {
-    const arrayBuffer = await contentStreamReference.arrayBuffer();
-    const blob = new Blob([arrayBuffer]);
-
-    const url = URL.createObjectURL(blob);
-
-    triggerFileDownload(fileName, url);
-
-    URL.revokeObjectURL(url);
-}
+﻿async
 
 function triggerFileDownload(fileName, url) {
     const anchorElement = document.createElement('a');
@@ -20,3 +11,30 @@ function triggerFileDownload(fileName, url) {
     anchorElement.click();
     anchorElement.remove();
 }
+
+(function (window) {
+    window.download =
+        window.download || function (fileName, contentStreamReference) {
+
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+
+            const url = URL.createObjectURL(blob);
+
+            triggerFileDownload(fileName, url);
+
+            URL.revokeObjectURL(url);
+        }
+    window.show =
+        window.show || function (id) {
+            $(`#${id}`).show()
+        }
+    window.hide =
+        window.hide || function (id) {
+            $(`#${id}`).hide()
+        }
+})(window);
+
+
+
+

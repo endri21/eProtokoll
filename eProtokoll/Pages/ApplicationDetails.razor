@@ -5,79 +5,88 @@
 @inject IApplicationConfigurationService _appConfig
 @using System.IO
 @using Microsoft.JSInterop
-@inject IJSRuntime JS
+@inject IJavascriptCaller jscaller
 
 
 <h3>@apps.appName</h3>
 
-<div class="container">
-    <ul class="list-group">
-        <li class="list-group-item disabled">Aplikimi:  <span style="right:auto"> @apps.appName</span></li>
-        <li class="list-group-item">Data e aplikimit: <span style="right:auto">@apps.appDate </span></li>
-        <li class="list-group-item">Institucioni i aplikimit:  <span style="right:auto">@apps.institution?.name </span></li>
-        <li class="list-group-item">Statusi: <span style="right:auto">  @apps.status </span></li>
-        <li class="list-group-item">Tipi: <span style="right:auto">@apps.type?.name </span></li>
 
-    </ul>
-</div>
-<div class="input-group">
-    @if (documentDtos.Count > 0)
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">emri i dokumentit</th>
-                    <th scope="col"></th>
+<div class="accordion" id="accordionExample">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Detajet e aplikimit
+                </button>
+            </h5>
+        </div>
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var i in documentDtos)
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                @apps.appName
+                @apps.appDate
+                @apps.institution?.name
+                @apps.status
+                @apps.type?.name
+
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Dokumentat e aplikimit
+                </button>
+            </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+
+                @if (documentDtos.Count > 0)
                 {
-                    var nr = 1;
-                    <tr>
-                        <th scope="row">@nr++</th>
-                        <td> @i.name</td>
-                        <td>
-                            <input type="button" @onclick="@(() => Remove(i))" class="btn btn-link" value="X" />
-                        </td>
-                    </tr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">emri i dokumentit</th>
+                                <th scope="col"></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in documentDtos)
+                            {
+                                var nr = 1;
+                                <tr>
+                                    <th scope="row">@nr++</th>
+                                    <td> @i.name</td>
+                                    <td>
+                                        <input type="button" @onclick="@(() => Download(i))" class="btn btn-link" value="X" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
-            </tbody>
-        </table>
-    }
-</div>
-<div class="row text-center" style="margin-top:10px">
-    <div class="col">
-        @(aprove)
-
-    </div>
-    <div class="col">
-        @(refuse)
-    </div>
-
-    <div class="col">
-
-        <input type="button" @onclick="@(() => ShowAproveMovie(apps.appId))" class="btn btn-primary" value="Kalo ne hapin tjeter" />
-    </div>
-
-    @*@if (apps.createdBy != UsersDto.id)
-        {
-            <div class="col">
-
-                <input type="button" @onclick="@(() => ShowAproveMovie(apps.appId))" class="btn btn-primary" value="Kalo ne hapin tjeter" />
             </div>
-        }
-        @if (apps.createdBy != UsersDto.id)
-        {
-            <div class="col">
-                <input type="button" @onclick="@(() => ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingThree">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Collapsible Group Item #3
+                </button>
+            </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
             </div>
-        }*@
-
+        </div>
+    </div>
 </div>
-
 
 @code {
     [Parameter]
@@ -99,7 +108,11 @@
     UsersDto UsersDto = new UsersDto();
     Dictionary<string, string> divs = new();
 
+    async void showHide()
+    {
+        await jscaller.Show("headingTwo");
 
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,11 +135,12 @@
 
     [CascadingParameter] public IModalService Modal { get; set; }
 
-    private async void Remove(DocumentDto index)
+    private async void Download(DocumentDto index)
     {
         var fileStream = new MemoryStream(index.bytes);
-        //using var streamRef = new DotNetStreamReference( fileStream);
-        await JS.InvokeVoidAsync("downloadFileFromStream", index.name, fileStream);
+
+        await jscaller.DownloadFile(index.name, fileStream);
+
     }
 
 
@@ -142,6 +156,8 @@
 
         Modal.Show<EditApplication>("EditApplication", parameters);
     }
+
+
 
     void ShowRefuzeApplication(int id)
     {

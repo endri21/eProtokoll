@@ -28,6 +28,7 @@ namespace eProtokoll
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<IJavascriptCaller, JavascriptCaller>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IApplicationConfigurationService, ApplicationConfigurationService>();
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();

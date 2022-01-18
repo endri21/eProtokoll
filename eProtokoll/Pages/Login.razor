@@ -3,65 +3,48 @@
 @inject IAuthenticationServices _authservice
 @inject NavigationManager _navmanager
 @inject IJSRuntime JsRuntime
+@inject IToastService toastService
 
+<center>
+    <div class="col-xl-8 p-3">
+        <RadzenCard>
+            <h2 class="mb-4">Login with register</h2>
+            <RadzenTemplateForm Data=@("LoginWithRegister")>
+                <RadzenLogin AllowResetPassword="false"
+                             Login=@(args => OnLogin(args))
+                             Register=@(args => OnRegister()) />
+            </RadzenTemplateForm>
+        </RadzenCard>
+    </div>
+</center>
 
-
-<style>
-    .body {
-        display: flex;
-        -ms-flex-align: center;
-        -ms-flex-pack: center;
-        -webkit-box-align: center;
-        align-items: center;
-        -webkit-box-pack: center;
-        justify-content: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
-    }
-</style>
-<div class="body">
-    <EditForm Model="model" OnValidSubmit="ExecuteLogin" class="form-signin">
-        <div class="text-center mb-4">
-
-            <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-
-        </div>
-        <div class="form-label-group">
-            <label for="inputEmail">Email address</label>
-            <input type="text" id="inputEmail" class="form-control" @bind-value="model.username" autofocus="">
-        </div>
-
-        <div class="form-label-group">
-            <label for="inputPassword">Password</label>
-            <input type="password" id="inputPassword" class="form-control" @bind-value="model.password" required="">
-        </div>
-        <div class="form-label-group" style="margin-top:10px">
-            <button class="btn btn-lg btn-primary btn-block" @onclick="ExecuteLogin" type="button">Sign in</button>
-        </div>
-        <p class="mt-5 mb-3 text-muted text-center">© Endri Isufi</p>
-    </EditForm>
-</div>
-
-
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
 @code {
-    private LoginRequest model = new();
-    private bool showErrorMessage = false;
-    private string errorMessage = "";
+
+
     [CascadingParameter] public IModalService Modal { get; set; }
 
-    private async Task ExecuteLogin()
+    private async Task OnLogin(Radzen.LoginArgs args)
     {
-        var result = await _authservice.Login(model);
+        var result = await _authservice.Login(new LoginRequest() { username = args.Username, password = args.Password });
 
         if (!result.success)
         {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(Components.ErrorComponent.message), result.errorMessage);
-            Modal.Show<Components.ErrorComponent>("Error", parameters);
+            toastService.ShowError(result.errorMessage);
         }
         else
         {
             _navmanager.NavigateTo($"/dashboard");
         }
+
+    }
+    private async Task OnRegister()
+    {
+
     }
 }

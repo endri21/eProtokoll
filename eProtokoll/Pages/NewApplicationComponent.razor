@@ -2,119 +2,110 @@
 @inject IApplicationService _appService
 @inject IUserRepository _userService
 @inject NavigationManager _navmanager
+@inject IToastService toastService
+
+<RadzenCard>
+    <EditForm Model="requestDto">
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Application Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputEmail3" @bind-value="requestDto.appName">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Application Date</label>
+            <div class="col-sm-10">
+                <RadzenDatePicker @bind-Value=@requestDto.appDate DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) Class="w-100" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Institucioni</label>
+            <div class="col-sm-10">
+                <RadzenDropDownDataGrid TValue="string" LoadData="@GetInstitution" AllowFiltering="true" AllowClear="true" AllowVirtualization="true"
+                                        Data=@customCustomersDataVirtualization Count="@customCustomersDataVirtualizationCount" TextProperty="CompanyName" ValueProperty="CustomerID"
+                                        Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using LoadData event")) Class="w-100" />
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Tipi</label>
+            <div class="col-sm-10">
+                <select class="custom-select mr-sm-2">
+                    <option value="1">Tipi A</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Perdoruesi</label>
+            <div class="col-sm-10">
+
+                <RadzenDropDownDataGrid TValue="string"
+                                        LoadData="@GetUsers" AllowClear="true"
+                                        Data=@users Count="@customCustomersDataVirtualizationCount"
+                                        TextProperty="name,lastname"
+                                        ValueProperty="id"
+                                        Class="w-100" />
 
 
-<EditForm Model="requestDto">
-    <div class="form-group row">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Application Name</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputEmail3" @bind-value="requestDto.appName">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Application Date</label>
-        <div class="col-sm-10">
-            @*<InputDate @bind-Value="requestDto.appDate"  />*@
-            <input type="date" class="form-control" @bind-value="requestDto.appDate">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Institucioni</label>
-        <div class="col-sm-10">
-            <select class="custom-select mr-sm-2">
-                <option value="1">Institucioni A</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Tipi</label>
-        <div class="col-sm-10">
-            <select class="custom-select mr-sm-2">
-                <option value="1">Tipi A</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Perdoruesi</label>
-        <div class="col-sm-10">
-            <select class="custom-select mr-sm-2" @bind="requestDto.to">
-                <option value="0">Zgjidhni</option>
-                @foreach (var usr in users)
-                {
-                    <option value="@usr.id">@usr.name @usr.lastName</option>
-                }
-            </select>
-        </div>
-    </div>
-    <div class="input-group">
-        <div class="custom-file">
-            <InputFile OnChange="@LoadFiles" class="custom-file-input" multiple />
-            <label class="custom-file-label" for="inputGroupFile04">@FileName</label>
-        </div>
-        <div class="input-group-append">
-            <button class="btn btn-info" @onclick="@AddDocument" type="button">+</button>
-        </div>
-    </div>
-    <div class="input-group">
-        @if (documentToShow.Count > 0)
-        {
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">emri i dokumentit</th>
-                        <th scope="col"></th>
 
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach (var i in documentToShow)
+                <select class="custom-select mr-sm-2" @bind="requestDto.to">
+                    <option value="0">Zgjidhni</option>
+                    @foreach (var usr in users)
                     {
-                        var nr = 1;
+                        <option value="@usr.id">@usr.name @usr.lastName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="custom-file">
+                <InputFile OnChange="@LoadFiles" class="custom-file-input" multiple />
+                <label class="custom-file-label" for="inputGroupFile04">@FileName</label>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-info" @onclick="@AddDocument" type="button">+</button>
+            </div>
+        </div>
+        <div class="input-group">
+            @if (documentToShow.Count > 0)
+            {
+                <table class="table">
+                    <thead>
                         <tr>
-                            <th scope="row">@nr</th>
-                            <td> @i.name</td>
-                            <td>
-                                <input type="button" @onclick="@(() => Remove(i))" class="btn btn-link" value="X" />
-                            </td>
+                            <th scope="col">#</th>
+                            <th scope="col">emri i dokumentit</th>
+                            <th scope="col"></th>
 
                         </tr>
-                        nr++;
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var i in documentToShow)
+                        {
+                            var nr = 1;
+                            <tr>
+                                <th scope="row">@nr</th>
+                                <td> @i.name</td>
+                                <td>
+                                    <input type="button" @onclick="@(() => Remove(i))" class="btn btn-link" value="X" />
+                                </td>
 
-
-
-        }
-
-
-    </div>
-    <!--<div class="custom-file">-->
-    @*<input type="file" onchange="@LoadFiles" class="custom-file-input" id="customFile">*@
-    <!--<label class="custom-file-label" for="customFile"> </label>
-    </div>-->
-    @*<div class="form-group row">
-        <div class="col-sm-10">*@
-
-    @*</div>
-        </div>*@
-
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Afati i aplikimit</label>
-        <div class="col-sm-10">
-
-            <input type="date" class="form-control" @bind-value="requestDto.appReviewDate">
+                            </tr>
+                            nr++;
+                        }
+                    </tbody>
+                </table>
+            }
         </div>
-    </div>
-    <button @onclick="CreateNew" class="btn btn-primary">Shto</button>
-</EditForm>
-
-
-
-
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Afati i aplikimit</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" @bind-value="requestDto.appReviewDate">
+            </div>
+        </div>
+        <button @onclick="CreateNew" class="btn btn-primary">Shto</button>
+    </EditForm>
+</RadzenCard>
 @code {
     private ApplicationRequestDto requestDto = new ApplicationRequestDto();
     private ListOfApplicationConfigsDto configsDto { get; set; }
@@ -131,12 +122,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        users = await _userService.GetUsersByRoleAsync("menaxher");
+        //users = await _userService.GetUsersByRoleAsync("menaxher");
 
         try
         {
-            var institution = _appService.GetInstitutionDtosAsync().Result.ToList();
-            configsDto.ListOfInstitution = institution;
+            //var institution = _appService.GetInstitutionDtosAsync().Result;
+            //configsDto.ListOfInstitution = institution;
         }
         catch (Exception ex)
         {
@@ -144,7 +135,7 @@
 
         }
 
-        ////var status = await _appService.GetAppStatusesAsync();
+
         ////var types = await _appService.GetTypeDtosAsync();
         ////configsDto.ListOfInstitution = institution;
         ////configsDto.ListOfStatus = status;
@@ -195,12 +186,47 @@
 
         if (post)
         {
+            toastService.ShowSuccess("U ruajt me sukses");
             _navmanager.NavigateTo("/dashboard");
+
+
         }
         else
         {
             ModalInstance.CancelAsync();
         }
+    }
+    IEnumerable<InstitutionDto> customCustomersData;
+    int customCustomersDataVirtualizationCount;
+    IEnumerable<InstitutionDto> customCustomersDataVirtualization;
+    async Task GetInstitution(LoadDataArgs args)
+    {
+
+        var institution = _appService.GetInstitutionDtosAsync().Result;
+        customCustomersDataVirtualizationCount = institution.Count();
+
+        customCustomersDataVirtualization = institution.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
+
+        InvokeAsync(StateHasChanged);
+
+    }
+
+    async void GetUsers(LoadDataArgs args)
+    {
+        users = await _userService.GetUsersByRoleAsync("menaxher");
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        ///console.Log($"{name} value changed to {str}");
+    }
+
+
+    void OnChange(DateTime? value, string name, string format)
+    {
+        //console.Log($"{name} value changed to {value?.ToString(format)}");
     }
 
     private void Remove(DocumentDto index)

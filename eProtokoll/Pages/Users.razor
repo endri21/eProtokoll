@@ -1,6 +1,7 @@
 ﻿@page "/users"
 @inject IUserRepository _userService
 @inject NavigationManager _navmanager
+@inject IToastService toastService
 
 <style>
     .dot {
@@ -58,17 +59,106 @@
         </table>
     </center>
 </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+
+
+<div class="container">
+    <div class="row py-5">
+        <div class="col">
+            <RadzenCard>
+
+                <RadzenDataList WrapItems="true" AllowPaging="true" Data="@users" TItem="UsersDto" PageSize="5">
+                    <Template Context="user">
+                        <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-3 p-3 product-title">
+                                        @(user.username)
+                                    </div>
+                                    <div class="col-lg-7 p-3">
+                                        <div class="row d-flex">
+                                            <div class="col-md-6 col-lg-2">
+                                                <h5 class="mb-0">In Stock</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(user.name)</p>
+                                            </div>
+                                            <div class="col-md-6 col-lg-2">
+                                                <h5 class="mb-0">Origin</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(user.lastName)</p>
+                                            </div>
+                                            <div class="col-md-6 col-lg-5">
+                                                <h5 class="mb-0">Sold by</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(user.isActive)</p>
+                                            </div>
+                                            <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0">
+                                                <RadzenSwitch @bind-Value=@user.isActive Change=@(args => OnChange(user)) />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 p-3">
+                                        <RadzenButton Text="Order now" Class="w-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </RadzenCard>
+                    </Template>
+                </RadzenDataList>
+
+            </RadzenCard>
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-title {
+        min-height: 72px;
+        color: #da0074;
+        background-color: rgba(255, 41, 155, .1);
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 20px;
+        letter-spacing: -0.02em;
+    }
+
+    .price-badge {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 20px;
+        padding: 8px;
+    }
+</style>
+
+
+
+
+
 @code {
     //list of users
-
-    private List<UsersDto> users = new();
+    IEnumerable<UsersDto> users;
+    //private List<UsersDto> users = new();
     protected override async Task OnInitializedAsync()
     {
-        users = await _userService.GetUsersAsync();
+        var result = await  _userService.GetUsersAsync();
+        users = result.ToList();
     }
     void GoToUser(int id)
     {
         _navmanager.NavigateTo($"/user/{id}");
     }
+    async void OnChange(UsersDto user)
+    {
+        var parameters = new ModalParameters();
+        var active = await _userService.ActivateUserAsync(user.id);
+        if (active)
+        {
 
+            toastService.ShowSuccess("Useri u aktivizua me sukses");
+
+        }
+        else
+        {
+            toastService.ShowError("Ka ndodhur nje gabim me aktivizimin e perdoruesit");
+
+
+        }
+    }
 }

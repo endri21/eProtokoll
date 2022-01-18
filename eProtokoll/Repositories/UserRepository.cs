@@ -24,7 +24,7 @@ namespace eProtokoll.Repositories
         private readonly string GET_USER = "usersmanage/GetUserById";
         private readonly string ACTIVATE_USER = "usersmanage/ActivateUser";
         private readonly string GET_ROLES = "UsersManage/GetRoles";
-        private readonly string GET_ALL_USERS = "UsersManage/getallusers";
+        private readonly string GET_ALL_USERS = "UsersManage/GetUsers";
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest register)
         {
             try
@@ -59,12 +59,22 @@ namespace eProtokoll.Repositories
         }
         public async Task<List<UsersDto>> GetUsersAsync()
         {
-            var response = await _clientRepository.GetAsync(GET_ALL_USERS);
-            var content = response.Content.ReadAsStringAsync().Result;
+            var responseAsync = await _clientRepository.GetAsync(GET_ALL_USERS);
+            try
+            {
+                var response = responseAsync;
+                var content = response.Content.ReadAsStringAsync().Result;
 
 
-            var result = JsonConvert.DeserializeObject<List<UsersDto>>(content);
-            return result;
+                var result = Task.Run(() => JsonConvert.DeserializeObject<List<UsersDto>>(content).ToList()).GetAwaiter().GetResult();
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            throw new NotImplementedException();
         }
 
         public async Task<UsersDto> GetUserAsyncById(int id)
@@ -120,7 +130,7 @@ namespace eProtokoll.Repositories
 
         public async Task<bool> ActivateUserAsync(int id)
         {
-            var response = await _clientRepository.PostAsync(id,$"{ACTIVATE_USER}?id={id}");
+            var response = await _clientRepository.PostAsync(id, $"{ACTIVATE_USER}?id={id}");
             try
             {
 
@@ -153,7 +163,7 @@ namespace eProtokoll.Repositories
         public async Task<List<RoleDto>> GetRolesAsync()
         {
             var response = await _clientRepository.GetAsync(GET_ROLES);
-            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var content = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<List<RoleDto>>(content);
@@ -163,7 +173,7 @@ namespace eProtokoll.Repositories
             {
                 return new List<RoleDto>();
             }
-           
+
         }
     }
 }

@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using Blazored.Toast;
 using eProtokoll.Interfaces;
 using eProtokoll.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,6 +31,7 @@ namespace eProtokoll
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
             builder.Services.AddScoped<IJavascriptCaller, JavascriptCaller>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddBlazoredToast();
             builder.Services.AddScoped<IApplicationConfigurationService, ApplicationConfigurationService>();
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

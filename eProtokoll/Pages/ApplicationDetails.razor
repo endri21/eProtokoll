@@ -4,12 +4,15 @@
 @inject IAuthenticationServices _auth
 @inject IApplicationConfigurationService _appConfig
 @using System.IO
-@using Microsoft.JSInterop
 @inject IJavascriptCaller jscaller
 
 
 <h3>@apps.appName</h3>
 
+@*<Radzen.Blazor.RadzenCard>
+
+
+</Radzen.Blazor.RadzenCard>*@
 
 <div class="accordion" id="accordionExample">
     <div class="card">
@@ -125,8 +128,6 @@
         string b = _appConfig.GetApplicationRefuseButtonByRole(UsersDto.role, apps.appId);
         var html = Markdig.Markdown.ToHtml(a);
 
-        //Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilde
-
         aprove = ((MarkupString)html);
         refuse = new MarkupString(b);
         documentDtos = userApplications.documentDtos;
@@ -152,8 +153,6 @@
 
         //       await GetAppsConfigs();
         // parameters.Add(nameof(EditApplication.ListOfApplicationCofigs), ListOfApplicationCofigs);
-
-
         Modal.Show<EditApplication>("EditApplication", parameters);
     }
 
@@ -162,19 +161,13 @@
     void ShowRefuzeApplication(int id)
     {
         var parameters = new ModalParameters();
-
-
         parameters.Add(nameof(RefuseModal.requestDto), userApplications);
-
         Modal.Show<RefuseModal>("Refuse", parameters, options);
     }
     void ShowAproveMovie(int id)
     {
         var parameters = new ModalParameters();
-
-
         parameters.Add(nameof(AproveModal.userApp), userApplications);
-
         Modal.Show<AproveModal>("Aprove", parameters, options);
     }
 

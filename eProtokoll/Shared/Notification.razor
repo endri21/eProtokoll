@@ -1,0 +1,19 @@
+﻿@inject INotificationService _service;
+<RadzenSplitButton Click=@(args => OnClick()) Text="SplitButton" Icon="account_circle">
+    <ChildContent>
+        @foreach (var i in Notifications)
+        {
+            <RadzenSplitButtonItem Text="@i.message" Value="1" Icon="account_box" />
+            @*<RadzenSplitButtonItem Text="Item2" Value="2" Icon="account_balance_wallet" />*@
+        }
+
+    </ChildContent>
+</RadzenSplitButton>
+
+@code {
+    private List<NotificationDto> Notifications = new();
+    async Task OnClick()
+    {
+        var re = await _service.GetNotifications();
+    }
+}

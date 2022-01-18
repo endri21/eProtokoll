@@ -3,17 +3,22 @@
     <ChildContent>
         @foreach (var i in Notifications)
         {
-            <RadzenSplitButtonItem Text="@i.message" Value="1" Icon="account_box" />
-            @*<RadzenSplitButtonItem Text="Item2" Value="2" Icon="account_balance_wallet" />*@
+            <RadzenSplitButtonItem Text="@i.message" Value="@i.id.ToString()" Icon="account_box" />
         }
 
     </ChildContent>
 </RadzenSplitButton>
 
 @code {
+
     private List<NotificationDto> Notifications = new();
+    protected override async Task OnInitializedAsync()
+    {
+        Notifications = await _service.GetNotifications();
+    }
+
     async Task OnClick()
     {
-        var re = await _service.GetNotifications();
+
     }
 }

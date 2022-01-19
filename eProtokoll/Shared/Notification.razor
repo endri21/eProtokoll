@@ -1,13 +1,36 @@
 ﻿@inject INotificationService _service;
-<RadzenSplitButton Click=@(args => OnClick()) Text="SplitButton" Icon="account_circle">
-    <ChildContent>
+
+@*<RadzenCard Style="margin-bottom: 200px; width: fit-content; min-width: 300px;" Class="mt-5 mx-auto text-right">*@
+    <RadzenProfileMenu>
+        <Template>
+            <RadzenGravatar Email="user@example.com">
+            </RadzenGravatar>
+        </Template>
+        <ChildContent>
+            @foreach (var i in Notifications)
+            {
+
+                <RadzenProfileMenuItem Text="@i.message"></RadzenProfileMenuItem>
+
+            }
+
+
+        </ChildContent>
+    </RadzenProfileMenu>
+@*</RadzenCard>*@
+
+@*<RadzenMenu>
+    <RadzenMenuItem Text="Containers" Icon="notification">
+
         @foreach (var i in Notifications)
         {
-            <RadzenSplitButtonItem Text="@i.message" Value="@i.id.ToString()" Icon="account_box" />
-        }
 
-    </ChildContent>
-</RadzenSplitButton>
+            <RadzenMenuItem Text="@i.message" Path="tabs" Icon="tab"></RadzenMenuItem>
+
+        }
+    </RadzenMenuItem>
+</RadzenMenu>*@
+
 
 @code {
 
@@ -19,6 +42,5 @@
 
     async Task OnClick()
     {
-
     }
 }

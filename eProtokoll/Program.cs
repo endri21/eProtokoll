@@ -31,6 +31,7 @@ namespace eProtokoll
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
             builder.Services.AddScoped<IJavascriptCaller, JavascriptCaller>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddBlazoredToast();
             builder.Services.AddScoped<IApplicationConfigurationService, ApplicationConfigurationService>();
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();

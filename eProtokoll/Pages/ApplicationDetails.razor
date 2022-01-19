@@ -6,90 +6,164 @@
 @using System.IO
 @inject IJavascriptCaller jscaller
 
+<style>
+    .icon {
+        width: 30px;
+        height: 30px;
+    }
+</style>
 
-<h3>@apps.appName</h3>
+<RadzenCard>
+    <h3>Detajet e aplikimit</h3>
+    <RadzenTabs Change=@OnChange TabPosition="TabPosition.Top" style="height: 504px; width: 100%; margin: 20px auto;" RenderMode="TabRenderMode.Client">
+        <Tabs>
+            <RadzenTabsItem Text="Te dhenat e aplikimit">
+                <Radzen.Blazor.RadzenCard>
+                    @apps?.appName
+                </Radzen.Blazor.RadzenCard>
+                <Radzen.Blazor.RadzenCard>
+                    @apps?.appDate
+                </Radzen.Blazor.RadzenCard>
+                <Radzen.Blazor.RadzenCard>
+                    @apps?.institution?.name
+                </Radzen.Blazor.RadzenCard>
+                <Radzen.Blazor.RadzenCard>
+                    @apps?.status
+                </Radzen.Blazor.RadzenCard>
+                <Radzen.Blazor.RadzenCard>
+                    @apps?.type?.name
+                </Radzen.Blazor.RadzenCard>
+            </RadzenTabsItem>
 
-@*<Radzen.Blazor.RadzenCard>
+            <RadzenTabsItem Text="Historiku i aplikimit">
+                <RadzenCard>
+                    Historiku i aplikimit
+                </RadzenCard>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Dokumentat e aplikimit">
 
-
-</Radzen.Blazor.RadzenCard>*@
-
-<div class="accordion" id="accordionExample">
-    <div class="card">
-        <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Detajet e aplikimit
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-            <div class="card-body">
-                @apps.appName
-                @apps.appDate
-                @apps.institution?.name
-                @apps.status
-                @apps.type?.name
-
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Dokumentat e aplikimit
-                </button>
-            </h5>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-            <div class="card-body">
-
-                @if (documentDtos.Count > 0)
+                @if (documentDtos != null)
                 {
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">emri i dokumentit</th>
-                                <th scope="col"></th>
+                    <table class="table" style="margin-top:10px">
 
-                            </tr>
-                        </thead>
                         <tbody>
                             @foreach (var i in documentDtos)
                             {
-                                var nr = 1;
                                 <tr>
-                                    <th scope="row">@nr++</th>
-                                    <td> @i.name</td>
                                     <td>
-                                        <input type="button" @onclick="@(() => Download(i))" class="btn btn-link" value="X" />
+                                        @switch (i.extention)
+                                        {
+                                            case "application/excel":
+
+                                                <img src="../img/powerpoint.png" class="icon" />
+                                                break;
+
+                                            case "application/pdf":
+                                                <img src="../img/powerpoint.png" class="icon" />
+                                                break;
+                                            case "application/msword":
+                                                <img src="../img/powerpoint.png" class="icon" />
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@i.name</td>
+                                    <td>
+                                        <div style="cursor:pointer; text-align:center">
+                                            <RadzenIcon Icon="get_app" @onclick="(()=>Download(i))" />
+                                        </div>
                                     </td>
                                 </tr>
                             }
+
                         </tbody>
                     </table>
                 }
+
+
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenCard>
+
+@*<div class="accordion" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Detajet e aplikimit
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    @apps.appName
+                    @apps.appDate
+                    @apps.institution?.name
+                    @apps.status
+                    @apps.type?.name
+
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-header" id="headingThree">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Collapsible Group Item #3
-                </button>
-            </h5>
-        </div>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-            <div class="card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Dokumentat e aplikimit
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                <div class="card-body">
+
+                    @if (documentDtos.Count > 0)
+                                            {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">emri i dokumentit</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var i in documentDtos)
+                                {
+                                    var nr = 1;
+                                    <tr>
+                                        <th scope="row">@nr++</th>
+                                        <td> @i.name</td>
+                                        <td>
+                                            <input type="button" @onclick="@(() => Download(i))" class="btn btn-link" value="X" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Collapsible Group Item #3
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+    </div>*@
 
 @code {
     [Parameter]
@@ -116,7 +190,10 @@
         await jscaller.Show("headingTwo");
 
     }
-
+    void OnChange(int index)
+    {
+        ///console.Log($"Tab with index {index} was selected.");
+    }
     protected override async Task OnInitializedAsync()
     {
         int.TryParse(appId, out int newId);

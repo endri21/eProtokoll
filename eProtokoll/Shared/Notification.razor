@@ -1,7 +1,6 @@
 ﻿@inject INotificationService _service;
-
 @*<RadzenCard Style="margin-bottom: 200px; width: fit-content; min-width: 300px;" Class="mt-5 mx-auto text-right">*@
-    <RadzenProfileMenu>
+@*<RadzenProfileMenu>
         <Template>
             <RadzenGravatar Email="user@example.com">
             </RadzenGravatar>
@@ -16,20 +15,288 @@
 
 
         </ChildContent>
-    </RadzenProfileMenu>
+    </RadzenProfileMenu>*@
+
+
+<style>
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .notification-drop {
+        font-family: 'Ubuntu', sans-serif;
+        color: #444;
+    }
+
+        .notification-drop .item {
+            padding: 10px;
+            font-size: 18px;
+            position: relative;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .notification-drop .item:hover {
+                cursor: pointer;
+            }
+
+            .notification-drop .item i {
+                margin-left: 10px;
+            }
+
+            .notification-drop .item ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                background: #fff;
+                left: -200px;
+                right: 0;
+                z-index: 1;
+                border-top: 1px solid #ddd;
+            }
+
+                .notification-drop .item ul li {
+                    font-size: 16px;
+                    padding: 15px 0 15px 25px;
+                }
+
+                    .notification-drop .item ul li:hover {
+                        background: #ddd;
+                        color: rgba(0, 0, 0, 0.8);
+                    }
+
+    @@media screen and (min-width: 500px) {
+        .notification-drop {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+            .notification-drop .item {
+                border: none;
+            }
+    }
+
+
+
+    .notification-bell {
+        font-size: 20px;
+    }
+
+    .btn__badge {
+        background: #FF5D5D;
+        color: white;
+        font-size: 12px;
+        position: absolute;
+        top: 0;
+        right: 0px;
+        padding: 3px 10px;
+        border-radius: 50%;
+    }
+
+    .pulse-button {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);
+        -webkit-animation: pulse 1.5s infinite;
+    }
+
+        .pulse-button:hover {
+            -webkit-animation: none;
+        }
+
+    @@-webkit-keyframes pulse {
+        0% {
+            -moz-transform: scale(0.9);
+            -ms-transform: scale(0.9);
+            -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+        }
+
+        70% {
+            -moz-transform: scale(1);
+            -ms-transform: scale(1);
+            -webkit-transform: scale(1);
+            transform: scale(1);
+            box-shadow: 0 0 0 50px rgba(255, 0, 0, 0);
+        }
+
+        100% {
+            -moz-transform: scale(0.9);
+            -ms-transform: scale(0.9);
+            -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+        }
+    }
+
+    .notification-text {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+        .notification-text span {
+            float: right;
+        }
+
+
+
+    /*new */
+    .top-text-block {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: inherit !important;
+        border-bottom: 1px solid #f4f4f4;
+        position: relative;
+        &:hover
+
+    {
+        &:before
+
+    {
+        content: '';
+        width: 4px;
+        background: #f05a1a;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+    }
+
+    }
+
+    &.unread {
+        background: #ffc;
+        // &:hover
+
+    {
+        // background:#ffd;
+        //
+    }
+
+    }
+
+    .top-text-light {
+        // color:#ccc;
+        color: #999;
+        font-size: 0.8em;
+    }
+
+    }
+
+    .top-head-dropdown {
+        .dropdown-menu
+
+    {
+        width: 350px;
+        height: 300px;
+        overflow: auto;
+    }
+
+    li:last-child {
+        .top-text-block
+
+    {
+        border-bottom: 0;
+    }
+
+    }
+    }
+
+    .topbar-align-center {
+        text-align: center;
+    }
+
+    .loader-topbar {
+        margin: 5px auto;
+        border: 3px solid #ddd;
+        border-radius: 50%;
+        border-top: 3px solid #666;
+        width: 22px;
+        height: 22px;
+        -webkit-animation: spin-topbar 1s linear infinite;
+        animation: spin-topbar 1s linear infinite;
+    }
+
+    @@-webkit-keyframes spin-topbar {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin-topbar {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+@*<ul class="notification-drop">
+        <li class="item">
+            <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i> <span class="btn__badge pulse-button ">4</span>
+            <ul>
+                @foreach (var i in Notifications)
+                {
+                    <li>@i.message</li>
+
+                }
+            </ul>
+        </li>
+    </ul>*@
+
+
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <!-- Single button -->
+        <div class="btn-group pull-right top-head-dropdown">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right ">
+                <li>
+                    @foreach (var i in Notifications)
+                    {
+                        <a href="#" class="top-text-block">
+                            <div class="top-text-heading">@i.message</div>
+                            <div class="top-text-light">15 minutes ago</div>
+                        </a>
+
+                    }
+
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
 @*</RadzenCard>*@
 
 @*<RadzenMenu>
-    <RadzenMenuItem Text="Containers" Icon="notification">
+        <RadzenMenuItem Text="Containers" Icon="notification">
 
-        @foreach (var i in Notifications)
-        {
+            @foreach (var i in Notifications)
+            {
 
-            <RadzenMenuItem Text="@i.message" Path="tabs" Icon="tab"></RadzenMenuItem>
+                <RadzenMenuItem Text="@i.message" Path="tabs" Icon="tab"></RadzenMenuItem>
 
-        }
-    </RadzenMenuItem>
-</RadzenMenu>*@
+            }
+        </RadzenMenuItem>
+    </RadzenMenu>*@
 
 
 @code {

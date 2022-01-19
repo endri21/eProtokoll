@@ -3,7 +3,7 @@
 @inject IAuthenticationServices _auth
 @inject IApplicationService _appService
 @inject NavigationManager _navmanager
-@inject IJavascriptCaller jscaller
+
 
 @using Microsoft.AspNetCore.Components.Authorization
 <AuthorizeView>
@@ -16,15 +16,13 @@
                 <div class="col-2">
                     @if (Auth.User.IsInRole("Punojes"))
                     {
-
-
                         <RadzenButton Click=@(args => GoToNewApplicationComponent()) Icon="add_circle_outline" />
                     }
                 </div>
             </div>
             @if (apps != null)
             {
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -50,40 +48,6 @@
                     </tbody>
                 </table>
             }
-
-
-            @*<RadzenDataGrid AllowFiltering="false"
-                                AllowPaging="true" PageSize="5" AllowSorting="false" Data="@data" TItem="ApplicationRequestDto"
-                                IsLoading="@isLoading"
-                                Count="@count">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="ApplicationRequestDto" Property="EmployeeID" Title="Emri i aplikimit" Type="typeof(string)">
-                            <Template>
-                                @context.appName
-                            </Template>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="ApplicationRequestDto" Property="FirstName" Title="Data e aplikimit" Type="typeof(DateTime)">
-                            <Template>
-                                @context.appDate
-                            </Template>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="ApplicationRequestDto" Property="LastName" Title="Statusi" Type="typeof(string)">
-                            <Template>
-                                @context.status
-                            </Template>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="ApplicationRequestDto" Sortable="false" Filterable="false">
-                            <Template>
-                                <div style="cursor:pointer; text-align:center">
-                                    <RadzenIcon Icon="open_in_new"  @onclick="(()=>GoToDetails(context.appId))" />
-                                </div>
-
-                            </Template>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>*@
-
-
         </RadzenCard>
     </Authorized>
 </AuthorizeView>
@@ -98,18 +62,11 @@
 @code {
 
     private List<ApplicationRequestDto> apps = new();
-    IEnumerable<ApplicationRequestDto> data;
-    int count;
-    bool isLoading;
 
     protected override async Task OnInitializedAsync()
     {
 
         apps = await _appService.GetApplicationAsync();
-
-        data = apps.AsODataEnumerable();
-        count = apps.Count;
-        isLoading = false;
     }
 
     void GoToDetails(int id)
@@ -119,9 +76,5 @@
     void GoToNewApplicationComponent()
     {
         _navmanager.NavigateTo("/newApplication");
-    }
-    async void show()
-    {
-        await jscaller.Print(3);
     }
 }

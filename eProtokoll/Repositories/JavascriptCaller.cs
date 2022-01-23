@@ -44,7 +44,7 @@ namespace eProtokoll.Repositories
 
         public async Task DownloadFile(string name, MemoryStream vs)
         {
-            await _jSRuntime.InvokeVoidAsync("show", name, vs);
+            await _jSRuntime.InvokeVoidAsync("download", name, vs);
         }
     }
 }

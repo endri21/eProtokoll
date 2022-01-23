@@ -20,6 +20,7 @@ namespace eProtokoll.Repositories
         private readonly string GET_TYPES_URL = "/applicationConfig/GetTypes";
         private readonly string REFUSE_APP_URL = "/application/RefuseApplication";
         private readonly string NEXT_STEP_URL = "/application/NextStep";
+        private readonly string GET_APP_HISTORY = "/application/GetApplicationHistory";
 
         private readonly IAuthenticationServices _authService;
         public ApplicationService(IHttpClientRepository httpClient, IAuthenticationServices authService)
@@ -36,7 +37,7 @@ namespace eProtokoll.Repositories
         }
         public async Task<List<ApplicationRequestDto>> GetApplicationAsync()
         {
-           string token = (await _authService.GetLocalUser())?.token;
+            string token = (await _authService.GetLocalUser())?.token;
             var response = await _httpClient.GetAsync($"{GET_APPLICATION_URL}?token={token}");
             try
             {
@@ -91,7 +92,9 @@ namespace eProtokoll.Repositories
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<List<InstitutionDto>>(content);
+                //var result = JsonConvert.DeserializeObject<List<InstitutionDto>>(content);
+                var result = Task.Run(() =>
+                JsonConvert.DeserializeObject<List<InstitutionDto>>(content).ToList()).GetAwaiter().GetResult();
                 return result.ToList();
             }
             catch (Exception)
@@ -107,7 +110,10 @@ namespace eProtokoll.Repositories
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<List<AppStatus>>(content);
+                var result = Task.Run(() =>
+               JsonConvert.DeserializeObject<List<AppStatus>>(content).ToList()).GetAwaiter().GetResult();
+                // JsonConvert.DeserializeObject<List<AppStatus>>(content);
+                return result;
             }
             catch (Exception)
             {
@@ -121,11 +127,12 @@ namespace eProtokoll.Repositories
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<List<TypeDto>>(content);
+                var result = Task.Run(() =>
+             JsonConvert.DeserializeObject<List<TypeDto>>(content).ToList()).GetAwaiter().GetResult();
+                return result;//JsonConvert.DeserializeObject<List<TypeDto>>(content);
             }
             catch (Exception)
             {
-
                 return new List<TypeDto>();
             }
         }
@@ -162,6 +169,21 @@ namespace eProtokoll.Repositories
                     success = false,
                     errorMessage = "Ka ndodhur nje gabim"
                 };
+            }
+        }
+
+        public async Task<List<ApplicationHistory>> GetApplicationHistoryAsync(int appId)
+        {
+            var response = await _httpClient.GetAsync($"{GET_APP_HISTORY}?appId={appId}");
+            try
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<List<ApplicationHistory>>(content);
+            }
+            catch (Exception)
+            {
+
+                return new List<ApplicationHistory>();
             }
         }
     }

@@ -5,6 +5,7 @@
 @inject IApplicationConfigurationService _appConfig
 @using System.IO
 @inject IJavascriptCaller jscaller
+@inject IJSRuntime JSRuntime
 
 <style>
     .icon {
@@ -37,7 +38,25 @@
 
             <RadzenTabsItem Text="Historiku i aplikimit">
                 <RadzenCard>
-                    Historiku i aplikimit
+                    <table class="table" style="margin-top:10px">
+
+                        <tbody>
+                            @foreach (var i in applicationHistories)
+                            {
+                                <tr>
+
+                                    <td>@i.AppName</td>
+                                    <td>@i.From</td>
+                                    <td>@i.To</td>
+                                    <td>@i.Commenti</td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+
                 </RadzenCard>
             </RadzenTabsItem>
             <RadzenTabsItem Text="Dokumentat e aplikimit">
@@ -106,6 +125,7 @@
     };
     UsersDto UsersDto = new UsersDto();
     Dictionary<string, string> divs = new();
+    List<ApplicationHistory> applicationHistories = new();
 
     async void showHide()
     {
@@ -122,6 +142,8 @@
         userApplications = await _appService.GetApplicationDetailsAsync(newId);
 
         apps = userApplications.applicationDto;
+
+        applicationHistories = await _appService.GetApplicationHistoryAsync(userApplications.applicationDto.appId);
         UsersDto = await _auth.GetLocalUser();
         string a = _appConfig.GetApplicationAproveButtonByRole(UsersDto.role, apps.appId);
         string b = _appConfig.GetApplicationRefuseButtonByRole(UsersDto.role, apps.appId);
@@ -139,30 +161,15 @@
     {
         var fileStream = new MemoryStream(index.bytes);
 
-        await jscaller.DownloadFile(index.name, fileStream);
-
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", index.name, "application/octet-stream", index.bytes);
     }
-
-
-    void ShowEditMovie(int movieId)
-    {
-        var parameters = new ModalParameters();
-
-        parameters.Add(nameof(EditApplication.apps), apps);
-
-        //       await GetAppsConfigs();
-        // parameters.Add(nameof(EditApplication.ListOfApplicationCofigs), ListOfApplicationCofigs);
-        Modal.Show<EditApplication>("EditApplication", parameters);
-    }
-
-
-
     void ShowRefuzeApplication(int id)
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(RefuseModal.requestDto), userApplications);
         Modal.Show<RefuseModal>("Refuse", parameters, options);
     }
+
     void ShowAproveMovie(int id)
     {
         var parameters = new ModalParameters();

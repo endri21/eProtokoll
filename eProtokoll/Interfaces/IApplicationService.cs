@@ -14,6 +14,7 @@ namespace eProtokoll.Interfaces
         Task<List<TypeDto>> GetTypeDtosAsync();
         Task<bool> RefuseApplicationAsync(UserApplicationsRequestDto requestDto);
         Task<Response> PassInNextStepAsync(UserApplicationsRequestDto dto);
+        Task<List<ApplicationHistory>> GetApplicationHistoryAsync(int appId);
 
     }
 }

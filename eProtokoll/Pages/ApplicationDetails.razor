@@ -13,112 +13,169 @@
         height: 30px;
     }
 </style>
+<style>
+    /* This CSS is specific to the current HTML.
+            Note that this snippet only contains the necessary changes and not the full Blazor app template */
+    .loading-section {
+        text-align: center;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-<RadzenCard>
-    <h3>Detajet e aplikimit</h3>
-    <RadzenTabs Change=@OnChange TabPosition="TabPosition.Top" style="height: 504px; width: 100%; margin: 20px auto;" RenderMode="TabRenderMode.Client">
-        <Tabs>
-            <RadzenTabsItem Text="Te dhenat e aplikimit">
-                <Radzen.Blazor.RadzenCard>
-                    @apps?.appName
-                </Radzen.Blazor.RadzenCard>
-                <Radzen.Blazor.RadzenCard>
-                    @apps?.appDate
-                </Radzen.Blazor.RadzenCard>
-                <Radzen.Blazor.RadzenCard>
-                    @apps?.institution?.name
-                </Radzen.Blazor.RadzenCard>
-                <Radzen.Blazor.RadzenCard>
-                    @apps?.status
-                </Radzen.Blazor.RadzenCard>
-                <Radzen.Blazor.RadzenCard>
-                    @apps?.type?.name
-                </Radzen.Blazor.RadzenCard>
-            </RadzenTabsItem>
+        .loading-section h2 {
+            color: #00b5dc;
+        }
 
-            <RadzenTabsItem Text="Historiku i aplikimit">
-                <RadzenCard>
-                    <table class="table table-striped" style="margin-top:10px">
-                        <thead>
-                            <tr>
-                                <th scope="col">Aplikimi</th>
-                                <th scope="col">Derguesi</th>
-                                <th scope="col">Marresi</th>
-                                <th scope="col">Koment</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var i in applicationHistories)
-                            {
+    .loader-dot {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background-color: #00b5dc;
+        display: inline-block;
+        -webkit-animation: grow 2.1s infinite ease-in-out both;
+        animation: grow 2.1s infinite ease-in-out both;
+    }
+
+        .loader-dot.dot1 {
+            -webkit-animation-delay: -0.96s;
+            animation-delay: -0.96s;
+        }
+
+        .loader-dot.dot2 {
+            -webkit-animation-delay: -0.48s;
+            animation-delay: -0.48s;
+        }
+
+    @@-webkit-keyframes grow {
+        0%, 80%, 100% {
+            -webkit-transform: scale(0)
+        }
+
+        40% {
+            -webkit-transform: scale(1.0)
+        }
+    }
+</style>
+<div class="loading-section" style="@display">
+
+
+    <div class="short-description"></div>
+    <div class="loader mt-5">
+        <div class="loader-dot dot1"></div>
+        <div class="loader-dot dot2"></div>
+        <div class="loader-dot dot3"></div>
+    </div>
+</div>
+<div style="@none">
+    <RadzenCard>
+        <h3>Detajet e aplikimit</h3>
+        <RadzenTabs Change=@OnChange TabPosition="TabPosition.Top" style="height: 504px; width: 100%; margin: 20px auto;" RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <RadzenTabsItem Text="Te dhenat e aplikimit">
+                    <Radzen.Blazor.RadzenCard>
+                        @apps?.appName
+                    </Radzen.Blazor.RadzenCard>
+                    <Radzen.Blazor.RadzenCard>
+                        @apps?.appDate
+                    </Radzen.Blazor.RadzenCard>
+                    <Radzen.Blazor.RadzenCard>
+                        @apps?.institution?.name
+                    </Radzen.Blazor.RadzenCard>
+                    <Radzen.Blazor.RadzenCard>
+                        @apps?.status
+                    </Radzen.Blazor.RadzenCard>
+                    <Radzen.Blazor.RadzenCard>
+                        @apps?.type?.name
+                    </Radzen.Blazor.RadzenCard>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Historiku i aplikimit">
+                    <RadzenCard>
+                        <table class="table table-striped" style="margin-top:10px">
+                            <thead>
                                 <tr>
-
-                                    <td>@i.AppName</td>
-                                    <td>@i.From</td>
-                                    <td>@i.To</td>
-                                    <td>@i.Commenti</td>
-
+                                    <th scope="col">Aplikimi</th>
+                                    <th scope="col">Derguesi</th>
+                                    <th scope="col">Marresi</th>
+                                    <th scope="col">Koment</th>
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @foreach (var i in applicationHistories)
+                                {
+                                    <tr>
 
-                        </tbody>
-                    </table>
+                                        <td>@i.AppName</td>
+                                        <td>@i.From</td>
+                                        <td>@i.To</td>
+                                        <td>@i.Commenti</td>
 
+                                    </tr>
+                                }
 
-                </RadzenCard>
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Dokumentat e aplikimit">
-
-                @if (documentDtos != null)
-                {
-                    <table class="table" style="margin-top:10px">
-
-                        <tbody>
-                            @foreach (var i in documentDtos)
-                            {
-                                <tr>
-                                    <td>
-                                        @switch (i.extention)
-                                        {
-                                            case "application/excel":
-
-                                                <img src="../img/powerpoint.png" class="icon" />
-                                                break;
-
-                                            case "application/pdf":
-                                                <img src="../img/powerpoint.png" class="icon" />
-                                                break;
-                                            case "application/msword":
-                                                <img src="../img/powerpoint.png" class="icon" />
-                                                break;
-                                            default:
-
-                                                break;
-                                        }
-                                    </td>
-                                    <td>@i.name</td>
-                                    <td>
-                                        <div style="cursor:pointer; text-align:center">
-                                            <RadzenIcon Icon="get_app" @onclick="(()=>Download(i))" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-
-                        </tbody>
-                    </table>
-                }
+                            </tbody>
+                        </table>
 
 
-            </RadzenTabsItem>
-        </Tabs>
-    </RadzenTabs>
-</RadzenCard>
+                    </RadzenCard>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Dokumentat e aplikimit">
+
+                    @if (documentDtos != null)
+                    {
+                        <table class="table" style="margin-top:10px">
+
+                            <tbody>
+                                @foreach (var i in documentDtos)
+                                {
+                                    <tr>
+                                        <td>
+                                            @switch (i.extention)
+                                            {
+                                                case "application/excel":
+
+                                                    <img src="../img/powerpoint.png" class="icon" />
+                                                    break;
+
+                                                case "application/pdf":
+                                                    <img src="../img/powerpoint.png" class="icon" />
+                                                    break;
+                                                case "application/msword":
+                                                    <img src="../img/powerpoint.png" class="icon" />
+                                                    break;
+                                                default:
+
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@i.name</td>
+                                        <td>
+                                            <div style="cursor:pointer; text-align:center">
+                                                <RadzenIcon Icon="get_app" @onclick="(()=>Download(i))" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+
+
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </RadzenCard>
+</div>
 @code {
     [Parameter]
     public string appId { get; set; }
 
     string id { get; set; }
-
+    string display = "";
+    string none = "display:none";
     private MarkupString aprove;
     MarkupString refuse = new MarkupString();
     private ApplicationRequestDto apps = new();
@@ -159,6 +216,8 @@
         aprove = ((MarkupString)html);
         refuse = new MarkupString(b);
         documentDtos = userApplications.documentDtos;
+        display = "display:none";
+        none = "";
 
     }
 

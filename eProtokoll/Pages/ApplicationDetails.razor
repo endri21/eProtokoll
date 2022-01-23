@@ -38,8 +38,15 @@
 
             <RadzenTabsItem Text="Historiku i aplikimit">
                 <RadzenCard>
-                    <table class="table" style="margin-top:10px">
-
+                    <table class="table table-striped" style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th scope="col">Aplikimi</th>
+                                <th scope="col">Derguesi</th>
+                                <th scope="col">Marresi</th>
+                                <th scope="col">Koment</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             @foreach (var i in applicationHistories)
                             {

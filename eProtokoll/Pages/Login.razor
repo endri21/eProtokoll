@@ -89,7 +89,7 @@
         display: flex;
     }
 
-        .social div {
+    /* .social div {
             background: red;
             width: 150px;
             border-radius: 3px;
@@ -101,15 +101,9 @@
 
             .social div:hover {
                 background-color: rgba(255,255,255,0.47);
-            }
+            }*/
 
-        .social .fb {
-            margin-left: 25px;
-        }
 
-        .social i {
-            margin-right: 4px;
-        }
 </style>
 
 <center class=".body">
@@ -123,10 +117,16 @@
         <input type="password" placeholder="Password" autocomplete="on" @bind-value="@Request.password" id="password">
 
         <button type="button" @onclick="OnLogin">Log In</button>
-        <div>Nese nuk ke nje llogari atehere </div>
         <div class="social">
-            <div class="go"><i class="fab fa-google" @onclick="OnRegister"></i>  Regjistrohu</div>
+            <div>Nese nuk ke nje llogari atehere 
+            <button type="button" style="margin-top:0px" class="btn btn-link" @onclick="OnRegister">Regjistrohu </button>
+            </div>
         </div>
+
+        @*<div class="social">
+
+                <div class="btn btn-link"><i class="fab fa-google"></i>  </div>
+            </div>*@
     </EditForm>
 </center>
 

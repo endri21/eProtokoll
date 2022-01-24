@@ -5,14 +5,9 @@ using eProtokoll.Interfaces;
 using eProtokoll.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Tewr.Blazor.FileReader;
 
@@ -37,6 +32,7 @@ namespace eProtokoll
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
+
             builder.Services.AddBlazoredModal();
             await builder.Build().RunAsync();
         }

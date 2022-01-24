@@ -25,7 +25,6 @@
 
         .loading-section h2 {
             color: #00b5dc;
-          
         }
 
     .loader-dot {
@@ -33,7 +32,7 @@
         width: 20px;
         border-radius: 50%;
         background-color: #0e193e;
-       /* linear-gradient( 180deg, rgb(1 7 18) 0%, #0e193e 70%)*/
+        /* linear-gradient( 180deg, rgb(1 7 18) 0%, #0e193e 70%)*/
         /*background-color: #00b5dc;*/
         display: inline-block;
         -webkit-animation: grow 2.1s infinite ease-in-out both;
@@ -59,6 +58,15 @@
             -webkit-transform: scale(1.0)
         }
     }
+
+
+    .para {
+        color: green;
+    }
+
+    .pas {
+        color: red;
+    }
 </style>
 <div class="loading-section" style="@display">
 
@@ -76,21 +84,63 @@
         <RadzenTabs Change=@OnChange TabPosition="TabPosition.Top" style="height: 504px; width: 100%; margin: 20px auto;" RenderMode="TabRenderMode.Client">
             <Tabs>
                 <RadzenTabsItem Text="Te dhenat e aplikimit">
-                    <Radzen.Blazor.RadzenCard>
-                        @apps?.appName
-                    </Radzen.Blazor.RadzenCard>
-                    <Radzen.Blazor.RadzenCard>
-                        @apps?.appDate
-                    </Radzen.Blazor.RadzenCard>
-                    <Radzen.Blazor.RadzenCard>
-                        @apps?.institution?.name
-                    </Radzen.Blazor.RadzenCard>
-                    <Radzen.Blazor.RadzenCard>
-                        @apps?.status
-                    </Radzen.Blazor.RadzenCard>
-                    <Radzen.Blazor.RadzenCard>
-                        @apps?.type?.name
-                    </Radzen.Blazor.RadzenCard>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">@apps?.appName</th>
+                               
+                            </tr>
+                            <tr></tr>
+                            <tr>
+                                <th scope="row"> @apps?.appDate</th>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@apps?.institution?.name</th>
+
+                            </tr>
+                            <tr>
+                                <th scope="row"> @apps?.status</th>
+
+                            </tr>
+                            <tr>
+                                @if (apps?.appReviewDate < DateTime.Now)
+                                {
+                                    <th scope="row" class="para"> Para afatit</th>
+                                }
+                                else if (apps?.appReviewDate > DateTime.Now)
+                                {
+                                    <th scope="row" class="pas"> Pas afatit</th>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                  @if (!userApplications.finished) { 
+                <div class="row">
+                    @if (UsersDto.role != null && UsersDto.role != "Punojes")
+                    {
+                        <div class="col">
+                            <input type="button" style="float:right" @onclick="(()=>ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+                        </div>
+                    }
+
+
+                    @if (UsersDto.role != null && UsersDto.role == "Drejtor")
+                    {
+                        <div class="col">
+                            <input type="button" class="btn btn-info" @onclick="(()=>ShowAproveMovie(apps.appId))" value="Aprovo aplikimin" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col">
+                            <input type="button" class="btn btn-info" @onclick="(()=>ShowAproveMovie(apps.appId))" value="Kalo ne hapin tjeter" />
+                        </div>
+                    }
+
+                </div>
+                    }
+                    
                 </RadzenTabsItem>
 
                 <RadzenTabsItem Text="Historiku i aplikimit">
@@ -119,7 +169,6 @@
 
                             </tbody>
                         </table>
-
 
                     </RadzenCard>
                 </RadzenTabsItem>
@@ -178,8 +227,9 @@
     string id { get; set; }
     string display = "";
     string none = "display:none";
-    private MarkupString aprove;
-    MarkupString refuse = new MarkupString();
+
+
+
     private ApplicationRequestDto apps = new();
     private List<DocumentDto> documentDtos = new();
     private UserApplicationsRequestDto userApplications = new();
@@ -211,12 +261,7 @@
 
         applicationHistories = await _appService.GetApplicationHistoryAsync(userApplications.applicationDto.appId);
         UsersDto = await _auth.GetLocalUser();
-        string a = _appConfig.GetApplicationAproveButtonByRole(UsersDto.role, apps.appId);
-        string b = _appConfig.GetApplicationRefuseButtonByRole(UsersDto.role, apps.appId);
-        var html = Markdig.Markdown.ToHtml(a);
 
-        aprove = ((MarkupString)html);
-        refuse = new MarkupString(b);
         documentDtos = userApplications.documentDtos;
         display = "display:none";
         none = "";

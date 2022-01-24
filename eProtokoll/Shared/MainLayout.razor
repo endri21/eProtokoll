@@ -11,7 +11,7 @@
 <AuthorizeView>
     <Authorized Context="Auth">
         @*<h1>Hello, @context.User.Identity.Name!</h1>*@
-
+        
         <div class="page">
             <div class="sidebar">
                 <NavMenu />
@@ -41,24 +41,17 @@
 
 @code {
     private UsersDto user = new();
-    protected override async Task OnInitializedAsync()
-    {
-        ///user = await _providerService.GetLocalUser();
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    user = await _providerService.GetLocalUser();
+    //}
     private void SecureMethod()
     {
 
     }
-}
-
-
-@code{
-
-
-
-    public async Task Logout()
+    public void Logout()
     {
-        Task.Run(() => _authservice.Logout());
+        _authservice.Logout();
         Navigation.NavigateTo("/", true);
     }
 }

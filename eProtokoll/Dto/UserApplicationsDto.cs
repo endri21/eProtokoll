@@ -13,5 +13,6 @@ namespace eProtokoll.Dto
         public int from { get; set; }
         public int to { get; set; }
         public List<DocumentDto> documentDtos { get; set; }
+        public bool finished { get; set; }
     }
 }

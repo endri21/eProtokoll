@@ -1,72 +1,13 @@
 ﻿@inject INotificationService _service;
-@*<RadzenCard Style="margin-bottom: 200px; width: fit-content; min-width: 300px;" Class="mt-5 mx-auto text-right">*@
-@*<RadzenProfileMenu>
-        <Template>
-            <RadzenGravatar Email="user@example.com">
-            </RadzenGravatar>
-        </Template>
-        <ChildContent>
-            @foreach (var i in Notifications)
-            {
+<RadzenMenu>
+    <RadzenMenuItem Text="" Icon="account_box">
+        @foreach (var i in Notifications)
+        {
+            <RadzenMenuItem Text="@i.message" Path="panel" Icon="content_paste"></RadzenMenuItem>
+        }
+    </RadzenMenuItem>
 
-                <RadzenProfileMenuItem Text="@i.message"></RadzenProfileMenuItem>
-
-            }
-
-
-        </ChildContent>
-    </RadzenProfileMenu>*@
-
-@*<ul class="notification-drop">
-    <li class="item">
-        <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i> <span class="btn__badge pulse-button ">4</span>
-        <ul>
-            @foreach (var i in Notifications)
-            {
-                <li>@i.message</li>
-
-            }
-        </ul>
-    </li>
-</ul>*@
-<!--<div class="panel panel-default">
-    <div class="panel-body">-->
-<!-- Single button -->
-<!--<div class="btn-group pull-right top-head-dropdown">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right ">
-                <li>
-                    @foreach (var i in Notifications)
-                    {
-                        <a href="#" class="top-text-block">
-                            <div class="top-text-heading">@i.message</div>
-                            <div class="top-text-light">15 minutes ago</div>
-                        </a>
-
-                    }
-
-                </li>
-
-            </ul>
-        </div>
-    </div>
-</div>-->
-@*</RadzenCard>*@
-
-@*<RadzenMenu>
-        <RadzenMenuItem Text="Containers" Icon="notification">
-
-            @foreach (var i in Notifications)
-            {
-
-                <RadzenMenuItem Text="@i.message" Path="tabs" Icon="tab"></RadzenMenuItem>
-
-            }
-        </RadzenMenuItem>
-    </RadzenMenu>*@
-
+</RadzenMenu>
 
 @code {
 
@@ -79,4 +20,7 @@
     async Task OnClick()
     {
     }
+    private bool collapseNavMenu = true;
+
+
 }

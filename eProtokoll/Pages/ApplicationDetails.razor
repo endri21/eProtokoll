@@ -88,7 +88,7 @@
                         <tbody>
                             <tr>
                                 <th scope="row">@apps?.appName</th>
-                               
+
                             </tr>
                             <tr></tr>
                             <tr>
@@ -115,32 +115,33 @@
                             </tr>
                         </tbody>
                     </table>
-                  @if (!userApplications.finished) { 
-                <div class="row">
-                    @if (UsersDto.role != null && UsersDto.role != "Punojes")
+                    @if (!userApplications.finished)
                     {
-                        <div class="col">
-                            <input type="button" style="float:right" @onclick="(()=>ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+                        <div class="row">
+                            @if (UsersDto.role != null && UsersDto.role != "Punojes")
+                            {
+                                <div class="col">
+                                    <input type="button" style="float:right" @onclick="(()=>ShowRefuzeApplication(apps.appId))" class="btn btn-danger" value="Kthe per shqyrtim" />
+                                </div>
+                            }
+
+
+                            @if (UsersDto.role != null && UsersDto.role == "Drejtor")
+                            {
+                                <div class="col">
+                                    <input type="button" class="btn btn-info" @onclick="(()=>ShowAprove(apps.appId))" value="Aprovo aplikimin" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <input type="button" class="btn btn-info" @onclick="(()=>ShowAprove(apps.appId))" value="Kalo ne hapin tjeter" />
+                                </div>
+                            }
+
                         </div>
                     }
 
-
-                    @if (UsersDto.role != null && UsersDto.role == "Drejtor")
-                    {
-                        <div class="col">
-                            <input type="button" class="btn btn-info" @onclick="(()=>ShowAproveMovie(apps.appId))" value="Aprovo aplikimin" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col">
-                            <input type="button" class="btn btn-info" @onclick="(()=>ShowAproveMovie(apps.appId))" value="Kalo ne hapin tjeter" />
-                        </div>
-                    }
-
-                </div>
-                    }
-                    
                 </RadzenTabsItem>
 
                 <RadzenTabsItem Text="Historiku i aplikimit">
@@ -283,7 +284,7 @@
         Modal.Show<RefuseModal>("Refuse", parameters, options);
     }
 
-    void ShowAproveMovie(int id)
+    void ShowAprove(int id)
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(AproveModal.userApp), userApplications);

@@ -1,26 +1,46 @@
 ﻿@inject INotificationService _service;
-<RadzenMenu>
-    <RadzenMenuItem Text="" Icon="account_box">
+<style>
+    .ul.rz-profile-menu {
+        border-left: none !important;
+    }
+
+    .badge {
+        position: absolute;
+        top: 0px;
+        right: 40px;
+        border-radius: 50%;
+        background: red;
+        color: white;
+    }
+</style>
+
+
+<RadzenProfileMenu>
+    <Template>
+        <i class="fa fa-bell" style="font-size:24px"></i>
+
+        <span class="badge">@no</span>
+
+    </Template>
+    <ChildContent>
         @foreach (var i in Notifications)
         {
-            <RadzenMenuItem Text="@i.message" Path="panel" Icon="content_paste"></RadzenMenuItem>
+            <RadzenProfileMenuItem Text="@i.message" Path="@("/appDetails/"+i.id)" Icon="announcement"></RadzenProfileMenuItem>
         }
-    </RadzenMenuItem>
 
-</RadzenMenu>
+    </ChildContent>
+</RadzenProfileMenu>
 
 @code {
 
     private List<NotificationDto> Notifications = new();
+    private int no = 0;
     protected override async Task OnInitializedAsync()
     {
         Notifications = await _service.GetNotifications();
+        no = Notifications.Count;
     }
 
-    async Task OnClick()
-    {
-    }
-    private bool collapseNavMenu = true;
 
 
 }

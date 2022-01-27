@@ -1,5 +1,6 @@
 ﻿@inject IApplicationService appsService
-
+@inject IToastService toastService
+@inject NavigationManager _navmanager
 
 <div class="simple-form">
 
@@ -7,8 +8,8 @@
         <label for="movie-name">Aplikimi: @userApp.applicationDto.appName </label>
         <textarea type="text" class="form-control" id="movie-name" />
     </div>
-    <button @onclick="SaveMovie" class="btn btn-primary">Submit</button>
-   
+    <button @onclick="Save" class="btn btn-primary">Submit</button>
+
 </div>
 
 
@@ -17,21 +18,24 @@
     [Parameter] public UserApplicationsRequestDto userApp { get; set; }
     [CascadingParameter] public IModalService Modal { get; set; }
 
-    async void SaveMovie()
+    async void Save()
     {
         var parameters = new ModalParameters();
         var result = await appsService.PassInNextStepAsync(userApp);
         if (result.success)
         {
-            parameters.Add(nameof(Components.SuccessComponent.message), result.errorMessage);
-            parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
+            toastService.ShowSuccess("Aplikimi kaloi me sukses");
+            _navmanager.NavigateTo("/dashboard");
+            //parameters.Add(nameof(Components.SuccessComponent.message), result.errorMessage);
+            //parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
 
-            Modal.Show<Components.SuccessComponent>("Success", parameters);
+            //Modal.Show<Components.SuccessComponent>("Success", parameters);
         }
         else
         {
-            parameters.Add(nameof(Components.ErrorComponent.message), result.errorMessage);
-            Modal.Show<Components.ErrorComponent>("Error", parameters);
+            toastService.ShowError("Ka ndodhhur nje gabim");
+            //parameters.Add(nameof(Components.ErrorComponent.message), result.errorMessage);
+            //Modal.Show<Components.ErrorComponent>("Error", parameters);
         }
         //appsService.Save(apps);
         // ModalInstance.CloseAsync(ModalResult.Ok<ApplicationRequestDto>(apps));

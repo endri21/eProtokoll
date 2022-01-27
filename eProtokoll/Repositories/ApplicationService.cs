@@ -154,7 +154,7 @@ namespace eProtokoll.Repositories
 
         public async Task<Response> PassInNextStepAsync(UserApplicationsRequestDto dto)
         {
-
+            
             var response = await _httpClient.PostAsync(dto, NEXT_STEP_URL);
             try
             {

@@ -88,72 +88,78 @@
         margin-top: 30px;
         display: flex;
     }
-
-    /* .social div {
-            background: red;
-            width: 150px;
-            border-radius: 3px;
-            padding: 5px 10px 10px 5px;
-            background-color: rgba(255,255,255,0.27);
-            color: #eaf0fb;
-            text-align: center;
-        }
-
-            .social div:hover {
-                background-color: rgba(255,255,255,0.47);
-            }*/
-
-
 </style>
 
 <center class=".body">
     <EditForm Model="Request">
         <h3>Login</h3>
-
         <label for="username">Username</label>
-        <input type="text" placeholder="Username" autocomplete="off" @bind-value="@Request.username" id="username">
-
+        <input type="text" placeholder="Username" autocomplete="off" @bind-value="@Request.username" @onclick="EmptyUsr" id="username">
+        <span>@usernameerror</span>
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" autocomplete="on" @bind-value="@Request.password" id="password">
-
+        <input type="password" placeholder="Password" autocomplete="on" @bind-value="@Request.password" @onclick="EmptyPass" id="password">
+        <span>@paswerror</span>
         <button type="button" @onclick="OnLogin">Log In</button>
         <div class="social">
-            <div>Nese nuk ke nje llogari atehere 
-            <button type="button" style="margin-top:0px" class="btn btn-link" @onclick="OnRegister">Regjistrohu </button>
-            </div>
         </div>
-
-        @*<div class="social">
-
-                <div class="btn btn-link"><i class="fab fa-google"></i>  </div>
-            </div>*@
+        <span>@wrongpass</span>
     </EditForm>
 </center>
 
 
 
 @code {
-
-
-    [CascadingParameter] public IModalService Modal { get; set; }
     private LoginRequest Request = new();
+    private string usernameerror = "";
+    private string paswerror = "";
+    private string wrongpass = "";
 
     private async Task OnLogin()
     {
-        var result = await _authservice.Login(Request);
-
-        if (!result.success)
+        if (validate(Request))
         {
-            toastService.ShowError(result.errorMessage);
-        }
-        else
-        {
-            _navmanager.NavigateTo($"/dashboard");
+
+            var result = await _authservice.Login(Request);
+
+            if (!result.success)
+            {
+                wrongpass = "Kredinciale te gabuara!";
+            }
+            else
+            {
+                _navmanager.NavigateTo($"/dashboard");
+            }
         }
 
+
+    }
+
+    bool validate(LoginRequest login)
+    {
+        if (string.IsNullOrEmpty(login.username))
+        {
+            usernameerror = "Ju lutem plotesoni username";
+            return false;
+        }
+        if (string.IsNullOrEmpty(login.password))
+        {
+            paswerror = "Ju lutem plotesoni fjalekalimin";
+            return false;
+        }
+        return true;
     }
     private async Task OnRegister()
     {
         _navmanager.NavigateTo($"/register");
     }
+
+    void EmptyUsr()
+    {
+        usernameerror = "";
+    }
+    void EmptyPass()
+    {
+        paswerror = "";
+    }
+
 }

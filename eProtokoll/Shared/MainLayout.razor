@@ -11,7 +11,7 @@
 <AuthorizeView>
     <Authorized Context="Auth">
         @*<h1>Hello, @context.User.Identity.Name!</h1>*@
-        
+
         <div class="page">
             <div class="sidebar">
                 <NavMenu />
@@ -19,9 +19,9 @@
 
             <div class="main">
 
-                <div class="top-row px-4" style="margin-bottom:20px">
+                <div class="top-row px-4" style="margin-bottom:25px; background-color:#fff">
 
-                    <label class="form-control">Miresevjen @Auth.User.Identity.Name!</label>
+
                     <Notification />
                     <input type="button" @onclick="Logout" class="btn btn-link " value="logout" />
                 </div>
@@ -40,11 +40,7 @@
 </AuthorizeView>
 
 @code {
-    private UsersDto user = new();
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    user = await _providerService.GetLocalUser();
-    //}
+
     private void SecureMethod()
     {
 

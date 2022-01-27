@@ -1,4 +1,6 @@
 ﻿@inject IApplicationService _appsService
+@inject IToastService toastService
+@inject NavigationManager _navmanager
 
 <EditForm Model="requestDto">
     <div class="simple-form">
@@ -28,15 +30,18 @@
         var result = await _appsService.RefuseApplicationAsync(requestDto);
         if (result)
         {
-            parameters.Add(nameof(Components.SuccessComponent.message), "Success");
-            parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
+            toastService.ShowSuccess("Aplikimi kaloi me sukses");
+            _navmanager.NavigateTo("/dashboard");
+            //parameters.Add(nameof(Components.SuccessComponent.message), "Success");
+            //parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
 
-            Modal.Show<Components.SuccessComponent>("Success", parameters);
+            //Modal.Show<Components.SuccessComponent>("Success", parameters);
         }
         else
         {
-            parameters.Add(nameof(Components.ErrorComponent.message), "Ka ndodhur nje gabim");
-            Modal.Show<Components.ErrorComponent>("Error", parameters);
+            toastService.ShowError("Ka ndodhhur nje gabim");
+            //parameters.Add(nameof(Components.ErrorComponent.message), "Ka ndodhur nje gabim");
+            //Modal.Show<Components.ErrorComponent>("Error", parameters);
         }
     }
 }

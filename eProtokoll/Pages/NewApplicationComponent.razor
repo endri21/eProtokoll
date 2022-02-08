@@ -100,6 +100,7 @@
         <button @onclick="CreateNew" class="btn btn-primary">Shto</button>
     </EditForm>
 </RadzenCard>
+
 @code {
     private ApplicationRequestDto requestDto = new ApplicationRequestDto();
 
@@ -158,6 +159,7 @@
 
         if (post)
         {
+
             toastService.ShowSuccess("U ruajt me sukses");
             _navmanager.NavigateTo("/dashboard");
         }
@@ -174,6 +176,7 @@
     {
         users = await _userService.GetUsersByRoleAsync("menaxher");
     }
+
     private void Remove(DocumentDto index)
     {
         documentDtos.Remove(index);

@@ -1,4 +1,4 @@
-﻿@page "/appDetails/{appId}"
+﻿@page "/appDetails/{appId}/{notificationid}"
 @inject IApplicationService _appService
 @inject NavigationManager _navmanager
 @inject IAuthenticationServices _auth
@@ -220,10 +220,15 @@
             </Tabs>
         </RadzenTabs>
     </RadzenCard>
+
 </div>
 @code {
     [Parameter]
     public string appId { get; set; }
+
+    [Parameter]
+    public string notificationid { get; set; }
+
 
     string id { get; set; }
     string display = "";
@@ -251,13 +256,16 @@
     }
     void OnChange(int index)
     {
-        ///console.Log($"Tab with index {index} was selected.");
     }
     protected override async Task OnInitializedAsync()
     {
         int.TryParse(appId, out int newId);
-        userApplications = await _appService.GetApplicationDetailsAsync(newId);
+        int.TryParse(notificationid, out int _notificationid);
 
+        if (_notificationid > 0)
+            await _appService.OpenNotification(_notificationid);
+
+        userApplications = await _appService.GetApplicationDetailsAsync(newId);
         apps = userApplications.applicationDto;
 
         applicationHistories = await _appService.GetApplicationHistoryAsync(userApplications.applicationDto.appId);

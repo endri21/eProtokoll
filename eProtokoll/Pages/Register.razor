@@ -70,8 +70,7 @@
 
     private async Task AddNewUser()
     {
-        //var PhotoExtension = loadedFiles.First().ContentType;
-        //var photoName = loadedFiles[0].Name;
+
 
         var result = await _userService.RegisterAsync(model);
     }
@@ -84,7 +83,7 @@
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-      
+
 
     }
 }

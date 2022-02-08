@@ -143,7 +143,8 @@
         }
         if (string.IsNullOrEmpty(login.password))
         {
-            paswerror = "Ju lutem plotesoni fjalekalimin";
+           // paswerror = "Ju lutem plotesoni fjalekalimin";
+            toastService.ShowError("Ju lutem plotesoni fjalekalimin");
             return false;
         }
         return true;

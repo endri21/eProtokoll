@@ -6,11 +6,11 @@
     <div class="simple-form">
 
         <div class="form-group">
-            <label>Comment </label>
+            <label>Koment </label>
             <InputTextArea @bind-Value="requestDto.comment" class="form-control"></InputTextArea>
 
         </div>
-        <button @onclick="Refuze" class="btn btn-primary">Submit</button>
+        <button @onclick="Refuze" class="btn btn-primary">Dergo</button>
 
     </div>
 </EditForm>
@@ -19,29 +19,31 @@
 
 
 
-    //[Parameter] public ApplicationRequestDto apps { get; set; }
+
     [Parameter] public UserApplicationsRequestDto requestDto { get; set; }
     [CascadingParameter] public IModalService Modal { get; set; }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        requestDto.comment = "";
+
+    }
     async void Refuze()
     {
 
         var parameters = new ModalParameters();
         var result = await _appsService.RefuseApplicationAsync(requestDto);
-        if (result)
+        if (result.success)
         {
             toastService.ShowSuccess("Aplikimi kaloi me sukses");
             _navmanager.NavigateTo("/dashboard");
-            //parameters.Add(nameof(Components.SuccessComponent.message), "Success");
-            //parameters.Add(nameof(Components.SuccessComponent.url), "/dashboard");
 
-            //Modal.Show<Components.SuccessComponent>("Success", parameters);
         }
         else
         {
             toastService.ShowError("Ka ndodhhur nje gabim");
-            //parameters.Add(nameof(Components.ErrorComponent.message), "Ka ndodhur nje gabim");
-            //Modal.Show<Components.ErrorComponent>("Error", parameters);
+
         }
     }
 }

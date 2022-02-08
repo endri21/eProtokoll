@@ -14,6 +14,7 @@ namespace eProtokoll.Repositories
         private readonly IHttpClientRepository _httpClient;
         private readonly string POST_APPLICATION_URL = "/application/postApp";
         private readonly string GET_APPLICATION_URL = "/application/GetMyApplications";
+        private readonly string GET_FINISHED_APPLICATION_URL = "/application/GetMyFinishedApplications";
         private readonly string GET_APPLICATION_DETAILS_URL = "/application/GetApplicationDetails";
         private readonly string GET_INSTITUTION_URL = "/applicationConfig/GetInstitution";
         private readonly string GET_STATUS_URL = "/applicationConfig/GetStatuses";
@@ -21,7 +22,7 @@ namespace eProtokoll.Repositories
         private readonly string REFUSE_APP_URL = "/application/RefuseApplication";
         private readonly string NEXT_STEP_URL = "/application/NextStep";
         private readonly string GET_APP_HISTORY = "/application/GetApplicationHistory";
-
+        private readonly string OPEN_NOTIFICATION = "/application/opennotification";
         private readonly IAuthenticationServices _authService;
         public ApplicationService(IHttpClientRepository httpClient, IAuthenticationServices authService)
         {
@@ -68,8 +69,7 @@ namespace eProtokoll.Repositories
                 {
                     return new UserApplicationsRequestDto
                     {
-                        // success = false,
-                        //errorMessage = "Nuk u mundesua lidhja me serverin qendror"
+
                     };
                 }
 
@@ -79,8 +79,7 @@ namespace eProtokoll.Repositories
 
                 return new UserApplicationsRequestDto
                 {
-                    /// success = false,
-                    //errorMessage = "Ka ndodhur nje gabim"
+
 
                 };
             }
@@ -112,7 +111,7 @@ namespace eProtokoll.Repositories
                 var content = response.Content.ReadAsStringAsync().Result;
                 var result = Task.Run(() =>
                JsonConvert.DeserializeObject<List<AppStatus>>(content).ToList()).GetAwaiter().GetResult();
-                // JsonConvert.DeserializeObject<List<AppStatus>>(content);
+
                 return result;
             }
             catch (Exception)
@@ -129,7 +128,7 @@ namespace eProtokoll.Repositories
                 var content = response.Content.ReadAsStringAsync().Result;
                 var result = Task.Run(() =>
              JsonConvert.DeserializeObject<List<TypeDto>>(content).ToList()).GetAwaiter().GetResult();
-                return result;//JsonConvert.DeserializeObject<List<TypeDto>>(content);
+                return result;
             }
             catch (Exception)
             {
@@ -137,24 +136,28 @@ namespace eProtokoll.Repositories
             }
         }
 
-        public async Task<bool> RefuseApplicationAsync(UserApplicationsRequestDto requestDto)
+        public async Task<Response> RefuseApplicationAsync(UserApplicationsRequestDto requestDto)
         {
             var response = await _httpClient.PostAsync(requestDto, REFUSE_APP_URL);
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<bool>(content);
+                return JsonConvert.DeserializeObject<Response>(content);
             }
             catch (Exception)
             {
 
-                return false;
+                return new Response()
+                {
+                    success = false,
+                    errorMessage = "Ka ndodhur nje gabim"
+                };
             }
         }
 
         public async Task<Response> PassInNextStepAsync(UserApplicationsRequestDto dto)
         {
-            
+
             var response = await _httpClient.PostAsync(dto, NEXT_STEP_URL);
             try
             {
@@ -184,6 +187,38 @@ namespace eProtokoll.Repositories
             {
 
                 return new List<ApplicationHistory>();
+            }
+        }
+
+        public async Task<List<ApplicationRequestDto>> GetFinishedApplicationAsync()
+        {
+            string token = (await _authService.GetLocalUser())?.token;
+            var response = await _httpClient.GetAsync($"{GET_FINISHED_APPLICATION_URL}?token={token}&isFinished=true");
+            try
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<ApplicationRequestDto>>(content) ?? new List<ApplicationRequestDto>();
+            }
+            catch (Exception)
+            {
+                return new List<ApplicationRequestDto>
+                {
+                };
+            }
+        }
+
+        public async Task<bool> OpenNotification(int id)
+        {
+            string token = (await _authService.GetLocalUser())?.token;
+            var response = await _httpClient.GetAsync($"{OPEN_NOTIFICATION}?token={token}&id={id}");
+            try
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

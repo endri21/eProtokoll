@@ -6,6 +6,7 @@
 @using System.IO
 @inject IJavascriptCaller jscaller
 @inject IJSRuntime JSRuntime
+@inject INotificationService _notification;
 
 <style>
     .icon {
@@ -263,7 +264,8 @@
         int.TryParse(notificationid, out int _notificationid);
 
         if (_notificationid > 0)
-            await _appService.OpenNotification(_notificationid);
+            await _notification.ReadNotificationAsync(_notificationid);
+    
 
         userApplications = await _appService.GetApplicationDetailsAsync(newId);
         apps = userApplications.applicationDto;

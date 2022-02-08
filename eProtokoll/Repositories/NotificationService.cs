@@ -17,6 +17,7 @@ namespace eProtokoll.Repositories
             _httpClient = clientRepository;
         }
         private readonly string GET_NOTIFICATION = "notifications/GetNotifications";
+        private readonly string READ_NOTIFICATION = "notifications/ReadNotification";
         public async Task<List<NotificationDto>> GetNotifications()
         {
             var response = await _httpClient.GetAsync($"{GET_NOTIFICATION}");
@@ -30,6 +31,20 @@ namespace eProtokoll.Repositories
                 return new List<NotificationDto>
                 {
                 };
+            }
+        }
+
+        public async Task<bool> ReadNotificationAsync(int id)
+        {
+            var response = await _httpClient.PostAsync(id,$"{READ_NOTIFICATION}?id={id}");
+            try
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

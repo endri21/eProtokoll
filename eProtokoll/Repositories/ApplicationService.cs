@@ -207,19 +207,6 @@ namespace eProtokoll.Repositories
             }
         }
 
-        public async Task<bool> OpenNotification(int id)
-        {
-            string token = (await _authService.GetLocalUser())?.token;
-            var response = await _httpClient.GetAsync($"{OPEN_NOTIFICATION}?token={token}&id={id}");
-            try
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+       
     }
 }

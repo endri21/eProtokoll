@@ -25,7 +25,7 @@
     <ChildContent>
         @foreach (var i in Notifications)
         {
-            <RadzenProfileMenuItem Text="@i.message" Path="@("/appDetails/"+i.idOfAction+"/notificationid/"+i.id)" Icon="announcement"></RadzenProfileMenuItem>
+            <RadzenProfileMenuItem Text="@i.message" Path="@("/appDetails/"+i.idOfAction+"/"+i.id)" Icon="announcement"></RadzenProfileMenuItem>
         }
 
     </ChildContent>

@@ -15,7 +15,7 @@
                 <div class="col-10">
                     <h3>Aplikimet e perfunduara</h3>
                 </div>
-       
+
             </div>
             @if (apps != null)
             {
@@ -33,17 +33,17 @@
                     <tbody>
                         @foreach (var a in apps)
                         {
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>@a.appName</td>
-                            <td>@a.appDate</td>
-                            <td>@a.status</td>
-                            <td style="cursor:pointer; text-align:center">
-                            </td>
-                            <td style="cursor:pointer; text-align:center">
-                                <RadzenIcon Icon="open_in_new" @onclick="(()=>GoToDetails(a.appId))" />
-                            </td>
-                        </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>@a.appName</td>
+                                <td>@a.appDate</td>
+                                <td>@a.status</td>
+                                <td style="cursor:pointer; text-align:center">
+                                </td>
+                                <td style="cursor:pointer; text-align:center">
+                                    <RadzenIcon Icon="open_in_new" @onclick="(()=>GoToDetails(a.appId))" />
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -71,7 +71,7 @@
 
     void GoToDetails(int id)
     {
-        _navmanager.NavigateTo($"/appDetails/{id}");
+        _navmanager.NavigateTo($"/appDetails/{id}/0");
     }
     void GoToNewApplicationComponent()
     {

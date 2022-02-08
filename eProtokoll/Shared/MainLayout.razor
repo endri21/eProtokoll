@@ -3,8 +3,6 @@
 @inject IAuthenticationServices _authservice
 @inject NavigationManager Navigation
 @inject IAuthenticationServices _providerService
-
-
 @using Microsoft.AspNetCore.Components.Authorization
 
 <BlazoredToasts />
@@ -20,8 +18,6 @@
             <div class="main">
 
                 <div class="top-row px-4" style="margin-bottom:25px; background-color:#fff">
-
-
                     <Notification />
                     <input type="button" @onclick="Logout" class="btn btn-link " value="logout" />
                 </div>

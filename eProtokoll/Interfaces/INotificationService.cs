@@ -7,6 +7,7 @@ namespace eProtokoll.Interfaces
     public interface INotificationService
     {
         Task<List<NotificationDto>> GetNotifications();
+        Task<bool> ReadNotificationAsync(int id);
     }
 
 }

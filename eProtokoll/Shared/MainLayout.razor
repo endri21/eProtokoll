@@ -5,10 +5,9 @@
 @inject IAuthenticationServices _providerService
 @using Microsoft.AspNetCore.Components.Authorization
 
-<BlazoredToasts />
+
 <AuthorizeView>
     <Authorized Context="Auth">
-        @*<h1>Hello, @context.User.Identity.Name!</h1>*@
 
         <div class="page">
             <div class="sidebar">
@@ -29,26 +28,35 @@
             </div>
         </div>
 
-        <BlazoredToasts Position="ToastPosition.BottomRight"
-                        Timeout="10"
-                        IconType="IconType.FontAwesome"
-                        SuccessClass="success-toast-override"
-                        SuccessIcon="fa fa-thumbs-up"
-                        ErrorIcon="fa fa-bug" />
     </Authorized>
-    @*<NotAuthorized>*@
+    @*<NotAuthorized>
 
-    @*<h1>Authentication Failure!</h1>
-        <p>You're not signed in.</p>*@
-    @*</NotAuthorized>*@
+        <h1>Authentication Failure!</h1>
+            <p>You're not signed in.</p>
+        </NotAuthorized>*@
 </AuthorizeView>
 
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
 @code {
 
     private void SecureMethod()
     {
 
     }
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await _authservice.GetLocalUser();
+        if (user.id < 0)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+    }
+
     public void Logout()
     {
         _authservice.Logout();

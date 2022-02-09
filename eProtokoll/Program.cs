@@ -28,6 +28,8 @@ namespace eProtokoll
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddBlazoredToast();
+            builder.Services.AddScoped<ToastService>();
+
             builder.Services.AddScoped<IApplicationConfigurationService, ApplicationConfigurationService>();
             builder.Services.AddScoped<IHttpClientRepository, HttpClientRepository>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

@@ -22,7 +22,7 @@
             <label for="inputPassword3" class="col-sm-2 col-form-label">Institucioni</label>
             <div class="col-sm-10">
 
-                <select class="custom-select mr-sm-2">
+                <select class="custom-select mr-sm-2" @bind="@instituId">
                     <option value="1">Institucioni A</option>
                     <option value="2">Institucioni B</option>
                     <option value="3">Institucioni C</option>
@@ -33,7 +33,7 @@
         <div class="form-group row">
             <label for="inputPassword3" class="col-sm-2 col-form-label">Tipi</label>
             <div class="col-sm-10">
-                <select class="custom-select mr-sm-2">
+                <select class="custom-select mr-sm-2" @bind="@typeId">
                     <option value="2">Tipi A</option>
                     <option value="3">Tipi B</option>
                     <option value="4">Tipi C</option>
@@ -52,44 +52,53 @@
                 </select>
             </div>
         </div>
-        <div class="input-group">
-            <div class="custom-file">
-                <InputFile OnChange="@LoadFiles" class="custom-file-input" multiple />
-                <label class="custom-file-label" for="inputGroupFile04">@FileName</label>
-            </div>
-            <div class="input-group-append">
-                <button class="btn btn-info" @onclick="@AddDocument" type="button">+</button>
+        <div class="form-group row">
+            <div class="input-group">
+                <label for="inputPassword3" class="col-sm-2 col-form-label">Dokumentat e aplikimit</label>
+                <div class="custom-file" style="        margin-left: 15px;
+        margin-left: 15px;
+        margin-right: 15px">
+                    <InputFile OnChange="@LoadFiles" class="custom-file-input" multiple />
+                    <label class="custom-file-label" for="inputGroupFile04">@FileName</label>
+                </div>
+                <div class="input-group-append" style="margin-right: 15px">
+                    <button class="btn btn-info" @onclick="@AddDocument" type="button">+</button>
+                </div>
             </div>
         </div>
-        <div class="input-group">
-            @if (documentToShow.Count > 0)
-            {
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">emri i dokumentit</th>
-                            <th scope="col"></th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var i in documentToShow)
-                        {
-                            var nr = 1;
+        <div class="form-group row">
+            <div class="input-group">
+                @if (documentToShow.Count > 0)
+                {
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <th scope="row">@nr</th>
-                                <td> @i.name</td>
-                                <td>
-                                    <input type="button" @onclick="@(() => Remove(i))" class="btn btn-link" value="X" />
-                                </td>
+                                <th scope="col">#</th>
+                                <th scope="col">emri i dokumentit</th>
+                                <th scope="col"></th>
 
                             </tr>
-                            nr++;
-                        }
-                    </tbody>
-                </table>
-            }
+                        </thead>
+                        <tbody>
+                            @foreach (var i in documentToShow)
+                            {
+                                var nr = 1;
+                                <tr>
+                                    <th scope="row">@nr</th>
+                                    <td> @i.name</td>
+                                    <td>
+                                        <input type="button" @onclick="@(() => Remove(i))" class="btn btn-link" value="X" />
+                                    </td>
+
+                                </tr>
+                                nr++;
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+
         </div>
         <div class="form-group row">
             <label for="inputPassword3" class="col-sm-2 col-form-label">Afati i aplikimit</label>
@@ -97,7 +106,10 @@
                 <input type="date" class="form-control" @bind-value="requestDto.appReviewDate">
             </div>
         </div>
-        <button @onclick="CreateNew" class="btn btn-primary">Shto</button>
+        <div class="float-right">
+            <button @onclick="CreateNew" class="btn btn-primary">Shto</button>
+        </div>
+
     </EditForm>
 </RadzenCard>
 
@@ -149,12 +161,15 @@
         }
 
     }
-
+    private int typeId = 0;
+    private int instituId = 0;
     async void CreateNew()
     {
+
+
         requestDto.documentDtos = documentDtos;
-        requestDto.institution = new InstitutionDto() { id = 1 };
-        requestDto.type = new TypeDto() { id = 1 };
+        requestDto.institution = new InstitutionDto() { id = instituId };
+        requestDto.type = new TypeDto() { id = typeId };
         var post = await _appService.PostApplicationAsync(requestDto);
 
         if (post)

@@ -72,17 +72,7 @@
             color: #e5e5e5;
         }
 
-    button {
-        margin-top: 50px;
-        width: 100%;
-        background-color: #ffffff;
-        color: #080710;
-        padding: 15px 0;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+
 
     .social {
         margin-top: 30px;
@@ -99,7 +89,7 @@
         <label for="password">Password</label>
         <input type="password" placeholder="Password" autocomplete="on" @bind-value="@Request.password" @onclick="EmptyPass" id="password">
         <span>@paswerror</span>
-        <button type="button" @onclick="OnLogin">Log In</button>
+        <button type="button" class="btn btn-info" style="margin-top:10px" @onclick="OnLogin">Log In</button>
         <div class="social">
         </div>
         <span>@wrongpass</span>
@@ -123,7 +113,8 @@
 
             if (!result.success)
             {
-                wrongpass = "Kredinciale te gabuara!";
+                toastService.ShowError("Kredinciale te gabuara!");
+               
             }
             else
             {
@@ -143,7 +134,7 @@
         }
         if (string.IsNullOrEmpty(login.password))
         {
-           // paswerror = "Ju lutem plotesoni fjalekalimin";
+            // paswerror = "Ju lutem plotesoni fjalekalimin";
             toastService.ShowError("Ju lutem plotesoni fjalekalimin");
             return false;
         }
